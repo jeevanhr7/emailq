@@ -1,0 +1,9 @@
+{
+  "Source": "manjeshpv@gmail.com",
+  "Template": "MyTemplate2",
+  "Destination": {
+    "ToAddresses": [ "manjeshpv@gmail.com"
+    ]
+  },
+  "TemplateData": "{ \"name\":\"Alejandro\", \"favoriteanimal\": \"alligator\" }"
+}

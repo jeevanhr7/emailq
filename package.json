@@ -1,0 +1,45 @@
+{
+  "name": "mailq",
+  "version": "1.0.0",
+  "description": "MailQ is an open source email server compatiable with Amazon SES APIs",
+  "main": "index.js",
+  "scripts": {
+    "test": "standard && istanbul cover _mocha",
+    "lint": "standard",
+    "dev": "node ./scripts/dev.js",
+    "maildev": "maildev",
+    "create-template": "aws ses create-template --cli-input-json file://server/api/template/data/CreateTemplate.cmd.json  --endpoint-url http://localhost:1587 --debug",
+    "send-email": "aws ses send-email   --from \"john@gmail.com\"   --destination \"ToAddresses=mike@gmail.com\"   --message \"Subject={Data=from ses,Charset=utf8},Body={Text={Data=ses says hi,Charset=utf8},Html={Data=,Charset=utf8}}\" --endpoint-url http://localhost:9999 --debug",
+    "send-templated-email": "aws ses send-templated-email --cli-input-json file://server/api/template/data/myemail.cmd.json --endpoint-url http://localhost:9999 --debug"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manjeshpv/mailq.git"
+  },
+  "keywords": [
+    "email"
+  ],
+  "author": "Quezx",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/manjeshpv/mailq/issues"
+  },
+  "homepage": "https://github.com/manjeshpv/mailq#readme",
+  "dependencies": {
+    "dotenv": "^5.0.1",
+    "express": "^4.16.3",
+    "sequelize": "^4.37.6",
+    "sequelize-cli": "^4.0.0",
+    "sqlite": "^2.9.1"
+  },
+  "devDependencies": {
+    "got": "^6.7.1",
+    "http-proxy-middleware": "0.12.0",
+    "istanbul": "^0.4.5",
+    "maildev": "^1.0.0-rc3",
+    "mocha": "^3.3.0",
+    "nodemailer": "2.3.0",
+    "nodemon": "^1.11.0",
+    "standard": "^11.0.1"
+  }
+}
