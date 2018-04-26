@@ -1,11 +1,16 @@
 const _ = require('lodash');
+const path = require('path');
 const Sequelize = require('sequelize');
 
 const config = require('../../config/environment');
 
+function getUserHome() {
+  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+}
+
 const sqlDefaults = {
   dialect: 'sqlite',
-  storage: config.DB_STORAGE || '../emailq.sqlite',
+  storage: config.DB_STORAGE || path.join(getUserHome(), 'emailq.sqlite'),
 };
 
 const db = {
