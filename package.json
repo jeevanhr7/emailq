@@ -1,6 +1,6 @@
 {
   "name": "mailq",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "MailQ is an open source email server compatiable with Amazon SES APIs",
   "main": "index.js",
   "scripts": {
