@@ -1,5 +1,5 @@
 {
-  "name": "mailq",
+  "name": "emailq",
   "version": "0.0.1",
   "description": "MailQ is an open source email server compatiable with Amazon SES APIs",
   "main": "index.js",
@@ -14,7 +14,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/manjeshpv/mailq.git"
+    "url": "git+https://github.com/manjeshpv/emailq.git"
   },
   "keywords": [
     "email"
@@ -22,9 +22,9 @@
   "author": "Quezx",
   "license": "Apache-2.0",
   "bugs": {
-    "url": "https://github.com/manjeshpv/mailq/issues"
+    "url": "https://github.com/manjeshpv/emailq/issues"
   },
-  "homepage": "https://github.com/manjeshpv/mailq#readme",
+  "homepage": "https://github.com/manjeshpv/emailq#readme",
   "dependencies": {
     "dotenv": "^5.0.1",
     "express": "^4.16.3",

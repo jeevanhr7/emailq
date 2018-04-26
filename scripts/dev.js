@@ -1,7 +1,7 @@
 const nodemon = require('nodemon')
 
 nodemon({
-  script: './bin/mailq',
+  script: './bin/emailq',
   verbose: true,
   watch: [
     'index.js',

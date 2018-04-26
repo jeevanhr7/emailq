@@ -13,14 +13,14 @@ if (fs.existsSync(envFile)) {
 } else {
   console.log(`.env file not found.
   Please create manually or visit http://localhost:3000
-  Learn more at check installation docs at https://github.com/manjeshpv/mailq/blob/${pkg.version}/docs/Installation.md
+  Learn more at check installation docs at https://github.com/manjeshpv/emailq/blob/${pkg.version}/docs/Installation.md
   Trying to connect with default settings.
   `);
 }
 process.env.NODE_ENV = process.env.NODE_ENV || 'development';
 const settings = {
   dialect: "sqlite",
-  storage: process.env.DB_STORAGE || '../mailq.sqlite',
+  storage: process.env.DB_STORAGE || '../emailq.sqlite',
   seederStorage: 'sequelize',
 };
 

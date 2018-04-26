@@ -6,11 +6,11 @@ console.log('config', config)
 
 const sqlDefaults = {
   dialect: 'sqlite',
-  storage: config.DB_STORAGE || '../mailq.sqlite',
+  storage: config.DB_STORAGE || '../emailq.sqlite',
 };
 
 const db = {
-  sequelize: new Sequelize('mailq', null, null, sqlDefaults),
+  sequelize: new Sequelize('emailq', null, null, sqlDefaults),
 };
 
 ['Template'].forEach(model =>
