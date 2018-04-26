@@ -18,19 +18,22 @@ exports.SendTemplatedEmail = (req, res, next) => { console.log("sendTemplatedEma
     .find({
       where: {
         TemplateName: req.body.Template,
-      }
+      },
+      raw: true,
     })
     .then(template => {
       const email = Object.flatten(_.omit(req.body, ['TemplateData', 'Template']));
 
       const data = JSON.parse(req.body.TemplateData);
 
+      console.log('template', template);
+
       email['Message.Subject.Data'] = hbs.compile(template.SubjectPart)(data);
       email['Message.Body.Html.Data'] = hbs.compile(template.HtmlPart)(data);
 
       // email['Message.Body.Text.Data'] = hbs.compile(template.TextPart)(data);
 
-      return ses(email)
+      return ses(email, req.body.Template)
         .then(r => res.end(successXML.replace('{{MessageId}}', r.messageId)))
         .catch(next);
     });

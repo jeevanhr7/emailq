@@ -1,59 +1,63 @@
-'use strict';
 const nodemailer = require('nodemailer');
+const {htmlToText} = require('nodemailer-html-to-text');
+
+const config = require('../../config/environment');
+
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+
 const options = {
-    port: 1025 ,
-    ignoreTLS: true,
+  host: config.SMTP_HOST,
+  port: config.SMTP_PORT,
+  secure: config.SMTP_SECURE === 'true',
+  ignoreTLS: config.SMTP_IGNORETLS === 'true',
+  auth: {
+    user: config.SMTP_AUTH_USER,
+    pass: config.SMTP_AUTH_PASS,
+  },
 };
 
-if (process.env.NODE_ENV === 'development' && options.host === 'localhost') delete options.auth;
-// create reusable transporter object using the default SMTP transport
+if (Number(options.port) === 1025) delete options.auth;
+
 let transporter = nodemailer.createTransport(options);
-let i = 0;
+transporter.use('compile', htmlToText());
 
-function ses(email) {
-    const {Source: from, Headers} = email; console.log('from', from)
-    const to = email['Destination.ToAddresses.member.1'];
-    const subject = email['Message.Subject.Data'];
-    const html = email['Message.Body.Html.Data'];
-    const text = email['Message.Body.Text.Data'];
+function ses(email, TemplateName = false) {
+  const {Source: from, Headers} = email;
 
-    if (!from) throw new Error('from missing');
+  const to = email['Destination.ToAddresses.member.1'];
+  const subject = email['Message.Subject.Data'];
+  const html = email['Message.Body.Html.Data'];
 
-    // setup email data with unicode symbols
-    let mail = {
-        from, // sender address
-        to, // list of receivers
-        subject, // Subject line
-    };
+  if (!from) throw new Error('from missing');
 
-    // hack for urgent
-    if(email['Destination.CcAddresses.member.1']){
-        const [feedback, unsubUrl] = email['Destination.CcAddresses.member.1'].split('~~');
-        mail.headers = {};
-        mail.headers['Feedback-ID'] = feedback;
-        mail.headers['List-Unsubscribe'] = `<${unsubUrl}>`;
+  // setup email data with unicode symbols
+  let mail = {
+    from, // sender address
+    to, // list of receivers
+    subject, // Subject line
+  };
+
+  if (subject) mail.subject = subject;
+  if (html) mail.html = html;
+
+  if (email['Message.Body.Text.Data']) mail.text = email['Message.Body.Text.Data'];
+
+  // Tracking in postal https://github.com/atech/postal
+  if (TemplateName) {
+    mail.headers = {
+      'x-postal-tag': TemplateName
     }
+  }
 
-    if (subject) mail.subject = subject;
-    if (text) mail.text = text;
-    if (html) mail.html = html;
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(mail, (error, info) => {
+      if (error) return reject(error);
 
-    return new Promise((resolve, reject) => {
-        transporter.sendMail(mail, (error, info) => {
+      info.messageId = info.messageId.slice(1, -1);
 
-            if (error) {
-                i++;
-                if(i===0) {
-                    console.log('err', error);
-                }
-
-                return reject(error);
-            }
-            info.messageId = info.messageId.slice(1, -1);
-            return resolve(info);
-        });
-    })
+      return resolve(info);
+    });
+  })
 }
 
 module.exports = ses;

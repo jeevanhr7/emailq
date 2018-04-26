@@ -1,11 +1,12 @@
 {
   "name": "emailq",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "MailQ is an open source email server compatiable with Amazon SES APIs",
   "main": "index.js",
   "scripts": {
     "test": "standard && istanbul cover _mocha",
     "lint": "standard",
+    "sequlize": "sequelize db:migrate",
     "dev": "node ./scripts/dev.js",
     "maildev": "maildev",
     "create-template": "aws ses create-template --cli-input-json file://server/api/template/data/CreateTemplate.cmd.json  --endpoint-url http://localhost:1587 --debug",
@@ -28,6 +29,8 @@
   "dependencies": {
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
+    "nodemailer": "^3.1.1",
+    "nodemailer-html-to-text": "^2.1.0",
     "sequelize": "^4.37.6",
     "sequelize-cli": "^4.0.0",
     "sqlite": "^2.9.1"
@@ -38,7 +41,6 @@
     "istanbul": "^0.4.5",
     "maildev": "^1.0.0-rc3",
     "mocha": "^3.3.0",
-    "nodemailer": "2.3.0",
     "nodemon": "^1.11.0",
     "standard": "^11.0.1"
   }

@@ -1,9 +1,8 @@
 {
-  "Source": "manjeshpv@gmail.com",
-  "Template": "MyTemplate2",
+  "Source": "notifications@quezx.com",
+  "Template": "c-referral-magiclink",
   "Destination": {
-    "ToAddresses": [ "manjeshpv@gmail.com"
-    ]
+    "ToAddresses": [ "manjeshpv@gmail.com"]
   },
   "TemplateData": "{ \"name\":\"Alejandro\", \"favoriteanimal\": \"alligator\" }"
 }

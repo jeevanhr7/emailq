@@ -2,7 +2,6 @@ const _ = require('lodash');
 const Sequelize = require('sequelize');
 
 const config = require('../../config/environment');
-console.log('config', config)
 
 const sqlDefaults = {
   dialect: 'sqlite',

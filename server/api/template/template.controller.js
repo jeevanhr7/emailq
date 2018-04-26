@@ -3,6 +3,7 @@ const { Template } = require('../../conn/sqldb');
 exports.create = (req, res, next) => {
   // check if template exists
   const { Template: template } = Object.unflatten(req.body);
+
   return Template
     .create(template)
     .then(template => {
@@ -16,7 +17,6 @@ exports.create = (req, res, next) => {
       return res.end(successXML);
     })
     .catch(e => {
-      console.log('eeee&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&', e);
       var errorXml = `<ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
         <Error>
           <Type>Sender</Type>
@@ -32,12 +32,10 @@ exports.create = (req, res, next) => {
         'content-type': 'text/xml'
       }).status(400).end(errorXml)
     });
-  return res.json('1')
 }
 
 exports.update = (req, res, next) => {
   const { Template: template } = Object.unflatten(req.body);
-  template.user_id = req.user.id;
   return Template
     .update(template, { where: { TemplateName: template.TemplateName }})
     .then(template => {
@@ -67,6 +65,5 @@ exports.update = (req, res, next) => {
         'content-type': 'text/xml'
       }).status(400).end(errorXml)
     });
-  return res.json('1')
 }
 
