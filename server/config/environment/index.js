@@ -1,9 +1,18 @@
+const fs = require('fs');
 const path = require('path');
 const dotenv = require('dotenv');
 
-const root = path.normalize(`${__dirname}/../../..`);console.log('root', root)
+function getUserHome() {
+  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+}
 
-const env = dotenv.config({ path: path.join(root, '.env') });
+const root = path.normalize(`${__dirname}/../../..`);
+
+if(!fs.existsSync(path.join(getUserHome(), '.emailq'))) {
+  fs.writeFileSync(path.join(getUserHome(), '.emailq'))
+}
+
+const env = dotenv.config({ path: path.join(getUserHome(), '.emailq') });
 
 const config = {
   all: {
