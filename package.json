@@ -1,6 +1,6 @@
 {
   "name": "emailq",
-  "version": "0.1.0",
+  "version": "0.1.3",
   "description": "MailQ is an open source email server compatiable with Amazon SES APIs",
   "main": "index.js",
   "scripts": {
@@ -15,7 +15,7 @@
     "send-templated-email": "aws ses send-templated-email --cli-input-json file://server/api/template/data/myemail.cmd.json --endpoint-url http://localhost:9999 --debug"
   },
   "bin": {
-    "emailq": "./bin/emailq"
+    "emailq": "./bin/emailq.js"
   },
   "repository": {
     "type": "git",
