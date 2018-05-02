@@ -9,7 +9,7 @@ function getUserHome() {
 const root = path.normalize(`${__dirname}/../../..`);
 
 if(!fs.existsSync(path.join(getUserHome(), '.emailq'))) {
-  fs.writeFileSync(path.join(getUserHome(), '.emailq'))
+  fs.writeFileSync(path.join(getUserHome(), '.emailq',"SMTP_PORT=1025"))
 }
 
 const env = dotenv.config({ path: path.join(getUserHome(), '.emailq') });
@@ -20,6 +20,7 @@ const config = {
     port: process.env.PORT || 5000,
     ip: process.env.IP || '0.0.0.0',
     root,
+    AWSRegion: process.env.AWSRegion || 'us-west-2',
   },
   development: {
 
@@ -34,6 +35,6 @@ const config = {
   },
 };
 
-const conf = Object.assign(env.parsed, config.all,  config[process.env.NODE_ENV || 'development']);
+const conf = Object.assign({}, env.parsed, config.all,  config[process.env.NODE_ENV || 'development']);
 
 module.exports = conf;
