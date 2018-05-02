@@ -3,7 +3,7 @@ const ses = require('../../conn/ses');
 const hbs = require('handlebars');
 const {Template, TemplateAd, Ad} = require('../../conn/sqldb');
 
-exports.SendTemplatedEmail = (req, res, next) => { console.log("sendTemplatedEmail", req.body)
+exports.SendTemplatedEmail = (req, res, next) => {
   const successXML = `<SendTemplatedEmailResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
   <SendTemplatedEmailResult>
   <MessageId>{{MessageId}}</MessageId>
@@ -25,8 +25,6 @@ exports.SendTemplatedEmail = (req, res, next) => { console.log("sendTemplatedEma
       const email = Object.flatten(_.omit(req.body, ['TemplateData', 'Template']));
 
       const data = JSON.parse(req.body.TemplateData);
-
-      console.log('template', template);
 
       email['Message.Subject.Data'] = hbs.compile(template.SubjectPart)(data);
       email['Message.Body.Html.Data'] = hbs.compile(template.HtmlPart)(data);
