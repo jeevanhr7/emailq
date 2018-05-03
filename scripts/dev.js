@@ -11,5 +11,5 @@ nodemon({
     '--verbose'
   ]
 }).on('start', function () {
-  console.log(`\n##########################`)
+
 })

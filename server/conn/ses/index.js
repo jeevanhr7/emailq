@@ -24,7 +24,10 @@ transporter.use('compile', htmlToText());
 function ses(email, TemplateName = false) {
   const {Source: from, Headers} = email;
 
-  const to = email['Destination.ToAddresses.member.1'];
+  const m = Object.unflatten(email);
+
+  const to = Object.values(m.Destination.ToAddresses.member);
+
   const subject = email['Message.Subject.Data'];
   const html = email['Message.Body.Html.Data'];
 
@@ -36,6 +39,12 @@ function ses(email, TemplateName = false) {
     to, // list of receivers
     subject, // Subject line
   };
+
+  const cc = m.Destination.CcAddresses ? Object.values(m.Destination.CcAddresses.member) : [];
+  if(cc.length) mail.cc = cc;
+
+  const bcc = m.Destination.BccAddresses ? Object.values(m.Destination.BccAddresses.member) : [];
+  if(bcc.length) mail.bcc = bcc;
 
   if (subject) mail.subject = subject;
   if (html) mail.html = html;

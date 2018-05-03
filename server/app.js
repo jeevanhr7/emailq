@@ -45,6 +45,7 @@ Object.flatten = function(data) {
 const http = require('http');
 const express = require('express');
 
+const config = require('./config/environment');
 const db = require('./conn/sqldb');
 
 const app = express();
@@ -74,10 +75,16 @@ process.on('uncaughtException', (err) => {
 const server = http.createServer(app);
 
 server.listen(port, host, () => {
-    console.log(`\n##########################`);
-    console.log(`## MailQ: Amazon SES Compatible ##`)
-    console.log(`##########################\n`);
-    console.log(`Running at http://${host}:${port}\n`);
+    console.log(`\n######################################################`);
+    console.log(`## EmailQ: Amazon SES Compatible                    ##`);
+    console.log(`######################################################\n##`);
+    console.log(`## AWSAccessKeyId: ${config.AWSAccessKeyId}`);
+    console.log(`## AWSSecretKey: ${config.AWSSecretKey}`);
+    console.log(`## AWSSecretKey: ${config.AWSRegion}`);
+    console.log(`## AWSEndPoint: ${config.AWSEndPoint || `http://${host}:${port}`}`);
+    console.log('## Update SMTP settings in `~/.emailq` and restart server');
+    console.log('## To start demo email server `npm i -g maildev && maildev`');
+    console.log(`##\n#######################################################\n`);
 });
 
 module.exports = app;

@@ -1,6 +1,6 @@
 {
   "name": "emailq",
-  "version": "0.1.3",
+  "version": "0.1.5",
   "description": "MailQ is an open source email server compatiable with Amazon SES APIs",
   "main": "index.js",
   "scripts": {
@@ -11,8 +11,8 @@
     "dev": "node ./scripts/dev.js",
     "maildev": "maildev",
     "create-template": "aws ses create-template --cli-input-json file://server/api/template/data/CreateTemplate.cmd.json  --endpoint-url http://localhost:1587 --debug",
-    "send-email": "aws ses send-email   --from \"john@gmail.com\"   --destination \"ToAddresses=mike@gmail.com\"   --message \"Subject={Data=from ses,Charset=utf8},Body={Text={Data=ses says hi,Charset=utf8},Html={Data=,Charset=utf8}}\" --endpoint-url http://localhost:9999 --debug",
-    "send-templated-email": "aws ses send-templated-email --cli-input-json file://server/api/template/data/myemail.cmd.json --endpoint-url http://localhost:9999 --debug"
+    "send-email": "aws ses send-email   --from \"john@gmail.com\"   --destination \"ToAddresses=manjeshpv@gmail.com\"   --message \"Subject={Data=from ses,Charset=utf8},Body={Text={Data=ses says hi,Charset=utf8},Html={Data=,Charset=utf8}}\" --endpoint-url http://localhost:1587 --debug",
+    "send-templated-email": "aws ses send-templated-email --cli-input-json file://server/api/template/data/myemail.cmd.json --endpoint-url http://localhost:1587 --debug"
   },
   "bin": {
     "emailq": "./bin/emailq.js"
