@@ -17,6 +17,7 @@ module.exports = function (app) {
       </ErrorResponse>`;
 
       if(req.headers.authorization && config.AWSAccessKeyId === req.headers.authorization.split('=')[1].split('/')[0]) return next();
+     return next()
       return res.status(403).end(errorXML);
     });
 

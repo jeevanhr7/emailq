@@ -1,18 +1,19 @@
 {
   "name": "emailq",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "description": "MailQ is an open source email server compatiable with Amazon SES APIs",
   "main": "index.js",
   "scripts": {
     "postinstall": "node ./node_modules/sequelize-cli/lib/sequelize db:migrate",
-    "test": "standard && istanbul cover _mocha",
+    "test": "NODE_ENV=test  mocha server/api/template/template.spec.js",
     "lint": "standard",
     "sequlize": "sequelize db:migrate",
     "dev": "node ./scripts/dev.js",
     "maildev": "maildev",
     "create-template": "aws ses create-template --cli-input-json file://server/api/template/data/CreateTemplate.cmd.json  --endpoint-url http://localhost:1587 --debug",
     "send-email": "aws ses send-email   --from \"john@gmail.com\"   --destination \"ToAddresses=manjeshpv@gmail.com\"   --message \"Subject={Data=from ses,Charset=utf8},Body={Text={Data=ses says hi,Charset=utf8},Html={Data=,Charset=utf8}}\" --endpoint-url http://localhost:1587 --debug",
-    "send-templated-email": "aws ses send-templated-email --cli-input-json file://server/api/template/data/myemail.cmd.json --endpoint-url http://localhost:1587 --debug"
+    "send-templated-email": "aws ses send-templated-email --cli-input-json file://server/api/template/data/myemail.cmd.json --endpoint-url http://localhost:1587 --debug",
+    "send-bulk-templated-email": "aws ses send-bulk-templated-email --cli-input-json file://server/api/template/data/blukemail.cmd.json --endpoint-url http://localhost:1587 --debug"
   },
   "bin": {
     "emailq": "./bin/emailq.js"
@@ -31,6 +32,7 @@
   },
   "homepage": "https://github.com/manjeshpv/emailq#readme",
   "dependencies": {
+    "aws-sdk": "^2.232.1",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "handlebars": "^4.0.11",
@@ -38,7 +40,8 @@
     "nodemailer-html-to-text": "^2.1.0",
     "sequelize": "^4.37.6",
     "sequelize-cli": "^4.0.0",
-    "sqlite": "^2.9.1"
+    "sqlite": "^2.9.1",
+    "supertest": "^3.0.0"
   },
   "devDependencies": {
     "got": "^6.7.1",
