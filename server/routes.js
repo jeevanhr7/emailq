@@ -28,7 +28,6 @@ module.exports = function (app) {
   app.use('/templates', template)
   app.get('/emails', (req, res) => res.json(IDENTITY.split(',')));
   app.get('/', (req, res) => res.json({ name, version }));
-
   app.use(logger.transports.sentry.raven.errorHandler());
   // All undefined asset or api routes should return a 404
   app.use((e, req, res, next) => {
