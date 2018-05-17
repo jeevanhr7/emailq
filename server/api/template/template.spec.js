@@ -1,22 +1,49 @@
-const rp = require('request-promise');
+const aws = require('aws-sdk')
+const sesEmail = require('./data/CreateTemplate.cmd')
+const app = require('./../../app')
+const request = require('supertest')
 
-const sesEmail = require('./data/CreateTemplate.cmd');
+const ses = new aws.SES({
+  region: 'us-west-2',
+  endpoint: 'http://localhost:1587',
+  apiVersion: '2010-12-01',
+  accessKeyId: 'AB',
+  secretAccessKey: 'CD'
+})
+const sendJson = {
+  'Template.TextPart': 'Dear {{name}},\r\nYour favorite animal is {{favoriteanimal}}.',
+  'Template.SubjectPart': 'Greetings, {{name}}!',
+  'Template.HtmlPart': '<h1>Hello {{name}},</h1><p>Your favorite animal is {{favoriteanimal}}.</p>',
+  'Template.TemplateName': 'MyTemplate',
+  'Version': '2010-12-01',
+  'Action': 'CreateTemplate'
+}
 
-var options = {
-    method: 'POST',
-    uri: 'http://localhost:9999',
-    form: sesEmail,
-    resolveWithFullResponse: true
-};
+describe('POST CreateTemplate', function () {
+  it('respond with xml', function () {
 
-test('adds 1 + 2 to equal 3', () => {
-    rp(options)
-        .then(function (response) {
-            expect(response.statusCode).toBe(200);
-        })
-        .catch(function (err) {
-            console.log('err----------------------', err, err.statusCode, err.message);
-            // POST failed...
-        });
-});
-
+    return ses.createTemplate(sesEmail, function (err, data) {
+      console.log('data', data)
+      if (err) console.log(err)
+      console.log(data)
+      assert.equal(1, 2)
+    })
+  })
+})
+//
+// describe('POST CreateTemplate', function () {
+//   it('respond with json ', function () {
+//     request(app)
+//       .post('/')
+//       .send(sendJson)
+//
+//       .end((res) => {
+//         throw error()
+//         console.log('body',res)
+//
+//       })
+//       // .expect('Content-Type', 'text/html; charset=utf-8')
+//       // .expect(200)
+//
+//   })
+// })

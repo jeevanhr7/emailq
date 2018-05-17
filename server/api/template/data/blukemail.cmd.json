@@ -1,0 +1,24 @@
+{
+  "Source":"manjeshpv@gmail.com",
+  "ConfigurationSetName":"",
+  "Template":"MyTemplate",
+  "Destinations":[
+    {
+      "Destination":{
+        "ToAddresses":[
+          "manjeshpv@gmail.com"
+        ]
+      },
+      "ReplacementTemplateData":"{ \"name\":\"Anaya\", \"favoriteanimal\":\"yak\" }"
+    },
+    {
+      "Destination":{
+        "ToAddresses":[
+          "manjeshpv@gmail.com"
+        ]
+      },
+      "ReplacementTemplateData":"{ \"name\":\"Liu\", \"favoriteanimal\":\"water buffalo\" }"
+    }
+  ],
+  "DefaultTemplateData":"{ \"name\":\"friend\", \"favoriteanimal\":\"unknown\" }"
+}

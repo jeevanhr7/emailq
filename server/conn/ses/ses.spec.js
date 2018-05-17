@@ -1,27 +1,4 @@
 
-Object.flatten = function(data) {
-  var result = {};
-  function recurse (cur, prop) {
-    if (Object(cur) !== cur) {
-      result[prop] = cur;
-    } else if (Array.isArray(cur)) {
-      for(var i=0, l=cur.length; i<l; i++)
-        recurse(cur[i], prop + "[" + i + "]");
-      if (l == 0)
-        result[prop] = [];
-    } else {
-      var isEmpty = true;
-      for (var p in cur) {
-        isEmpty = false;
-        recurse(cur[p], prop ? prop+"."+p : p);
-      }
-      if (isEmpty && prop)
-        result[prop] = {};
-    }
-  }
-  recurse(data, "");
-  return result;
-}
 
 const email = {
   "Message": {
@@ -36,4 +13,18 @@ const email = {
 
 const ses = require('./index')
 
-ses(Object.flatten(email), 'c-referral-magiclink.js').then(s => console.log('success', s)).catch(er => console.log(er));
+
+var assert = require('assert');
+describe('AWS', function() {
+  describe('ses()', function() {
+    it('should return -1 when the value is not present', function(done) {
+
+      ses(email 'c-referral-magiclink.js')
+    .then(s => {
+      console.log('success', s)
+        done()
+      }).catch(er => console.log(er));
+      assert.equal([1,2,3].indexOf(4), -1);
+    });
+  });
+});
