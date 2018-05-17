@@ -9,6 +9,7 @@ const { name, version } = require('../package.json');
 
 const TemplateCtrl = require('./api/template/template.controller');
 const EmailCtrl = require('./api/email/email.controller');
+const logger = require('./components/logger');
 
 module.exports = function (app) {
   app.use('/', (req, res, next) => {
@@ -26,13 +27,13 @@ module.exports = function (app) {
 
   app.get('/', (req, res) => res.json({ name, version }));
   app.use(express.static(app.get('appPath')));
-
+  app.use(logger.transports.sentry.raven.errorHandler());
   // All undefined asset or api routes should return a 404
   app.use((e, req, res, next) => {
     const err = e;
     const { body, headers, user } = req;
 
-    console.error(err.message, err, {
+    logger.error(err.message, err, {
       url: req.originalUrl,
       body,
       headers,
@@ -41,6 +42,7 @@ module.exports = function (app) {
 
     return res.status(500).json({ message: err.message, stack: err.stack });
   });
+
   app.use((req, res, next) => {
     console.log('request', req.body)
     next()
