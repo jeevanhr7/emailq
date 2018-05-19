@@ -1,6 +1,6 @@
 {
   "Source": "notifications@quezx.com",
-  "Template": "c-referral-magiclink",
+  "Template": "MyTemplate",
   "Destination": {
     "ToAddresses": [ "manjeshpv@gmail.com","manjeshpv@gmail.com"],
     "CcAddresses": [ "manjeshpv@ssit.edu.in","manjeshpv@gmail.com"],
