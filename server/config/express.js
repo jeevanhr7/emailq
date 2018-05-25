@@ -9,7 +9,7 @@ module.exports = function (app) {
     app.set('appPath', path.join(config.root, 'client'));
     app.use('/client', express.static(app.get('appPath')));
     app.use((req, res, next) => {
-      if(req.originalUrl === '/') return res.redirect('/client');
+      if(req.originalUrl === '/' && req.method === 'GET') return res.redirect('/client');
       res.set('Content-Type', 'text/xml');
       const errorXML = `<ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
         <Error>
