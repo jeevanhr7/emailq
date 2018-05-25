@@ -1,11 +1,11 @@
 {
   "name": "emailq",
-  "version": "0.2.0",
+  "version": "0.2.5",
   "description": "MailQ is an open source email server compatiable with Amazon SES APIs",
   "main": "index.js",
   "scripts": {
     "postinstall": "node ./node_modules/sequelize-cli/lib/sequelize db:migrate",
-    "test": "NODE_ENV=test  mocha server/api/template/template.spec.js",
+    "test": "NODE_ENV=test  mocha server/api/**/*.spec.js",
     "lint": "standard",
     "sequlize": "sequelize db:migrate",
     "dev": "node ./scripts/dev.js",

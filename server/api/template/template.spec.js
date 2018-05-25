@@ -2,11 +2,12 @@ const aws = require('aws-sdk')
 const sesEmail = require('./data/CreateTemplate.cmd')
 const app = require('./../../app')
 const request = require('supertest')
+const { AWSRegion } = require('./../../config/environment');
 
 const ses = new aws.SES({
-  region: 'us-west-2',
-  endpoint: 'http://localhost:1587',
-  apiVersion: '2010-12-01',
+  region: AWSRegion,
+  endpoint: AWSEndPoint,
+  apiVersion: AWSAccessKeyId,
   accessKeyId: 'AB',
   secretAccessKey: 'CD'
 })

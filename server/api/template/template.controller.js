@@ -1,4 +1,6 @@
 const { Template } = require('../../conn/sqldb');
+exports.index = (req, res, next) => Template
+  .findAll({ raw: true }).then(templates => res.json(templates)).catch(next);
 
 exports.create = (req, res, next) => {
   // check if template exists

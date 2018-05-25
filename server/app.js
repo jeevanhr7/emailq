@@ -44,9 +44,10 @@ Object.flatten = function (data) {
 }
 
 const http = require('http')
-const express = require('express')
+const express = require('express');
 
 const config = require('./config/environment')
+const db = require('./conn/sqldb')
 
 const app = express()
 

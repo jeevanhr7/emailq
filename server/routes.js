@@ -3,12 +3,13 @@
  * Main application routes
  */
 
-const express = require('express');
-
 const { name, version } = require('../package.json');
 
+const { IDENTITY } = require('./config/environment');
 const TemplateCtrl = require('./api/template/template.controller');
 const EmailCtrl = require('./api/email/email.controller');
+
+const template = require('./api/template');
 const logger = require('./components/logger');
 
 module.exports = function (app) {
@@ -24,7 +25,8 @@ module.exports = function (app) {
       default: return next();
     }
   });
-
+  app.use('/templates', template)
+  app.get('/emails', (req, res) => res.json(IDENTITY.split(',')));
   app.get('/', (req, res) => res.json({ name, version }));
   app.use(express.static(app.get('appPath')));
   app.use(logger.transports.sentry.raven.errorHandler());

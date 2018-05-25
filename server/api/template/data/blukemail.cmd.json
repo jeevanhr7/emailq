@@ -1,5 +1,5 @@
 {
-  "Source":"manjeshpv@gmail.com",
+  "Source":"notifications@quezx.com",
   "ConfigurationSetName":"",
   "Template":"MyTemplate",
   "Destinations":[
@@ -14,7 +14,7 @@
     {
       "Destination":{
         "ToAddresses":[
-          "manjeshpv@gmail.com"
+          "manjesh@quetzal.in"
         ]
       },
       "ReplacementTemplateData":"{ \"name\":\"Liu\", \"favoriteanimal\":\"water buffalo\" }"

@@ -9,7 +9,7 @@ function getUserHome() {
 const root = path.normalize(`${__dirname}/../../..`);
 
 if(!fs.existsSync(path.join(getUserHome(), '.emailq'))) {
-  fs.writeFileSync(path.join(getUserHome(), '.emailq',"SMTP_PORT=1025"))
+  fs.writeFileSync(path.join(getUserHome(), '.emailq'),"SMTP_PORT=1025")
 }
 
 const env = dotenv.config({ path: path.join(getUserHome(), '.emailq') });
@@ -21,6 +21,9 @@ const config = {
     ip: process.env.IP || '0.0.0.0',
     root,
     AWSRegion: process.env.AWSRegion || 'us-west-2',
+    AWSEndPoint: process.env.AWSEndPoint || 'http://127.0.0.1:1587',
+    AWSSecretKey: process.env.AWSSecretKey,
+    AWSAccessKeyId: process.env.AWSAccessKeyId,
   },
   development: {
 

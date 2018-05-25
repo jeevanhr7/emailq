@@ -2,9 +2,9 @@ const _ = require('lodash')
 const ses = require('../../conn/ses')
 const hbs = require('handlebars')
 const {Template} = require('../../conn/sqldb')
+const { IDENTITY,AWSRegion } = require('../../config/environment')
 
-exports.SendTemplatedEmail = (req, res, next) => {
-  const successXML = `<SendTemplatedEmailResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
+const successXML = `<SendTemplatedEmailResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
   <SendTemplatedEmailResult>
   <MessageId>{{MessageId}}</MessageId>
 </SendTemplatedEmailResult>
@@ -12,6 +12,52 @@ exports.SendTemplatedEmail = (req, res, next) => {
 <RequestId>92cc9bd5-46f3-11e8-b1cf-eb88b8df7515</RequestId>
 </ResponseMetadata>
 </SendTemplatedEmailResponse>`
+
+const templateNotExistXml = `<ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
+  <Error>
+    <Type>Sender</Type>
+    <Code>TemplateDoesNotExist</Code>
+    <Message>Template {{Template}} does not exist</Message>
+  </Error>
+  <RequestId>e4c2f027-5f3b-11e8-b537-a1fb215b245c</RequestId>
+</ErrorResponse>`;
+
+const blankToErrorXml = `<ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
+  <Error>
+    <Type>Sender</Type>
+    <Code>InvalidParameterValue</Code>
+    <Message>Missing required header 'To'.</Message>
+  </Error>
+  <RequestId>b4d7383e-5f3c-11e8-b4be-812c23760600</RequestId>
+</ErrorResponse>`
+
+const addressNotVerifiedErrorXML = `<ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
+  <Error>
+    <Type>Sender</Type>
+    <Code>MessageRejected</Code>
+    <Message>Email address is not verified. The following identities failed the check in region ${AWSRegion.toUpperCase()}: {{IDENTITY}}</Message>
+  </Error>
+  <RequestId>dcab8787-5f3e-11e8-90b8-b713caf4b232</RequestId>
+</ErrorResponse>`;
+
+
+exports.SendTemplatedEmail = (req, res, next) => {
+  const email = _.omit(Object.unflatten(req.body), ['TemplateData', 'Template'])
+  console.log({ email });
+  if(!IDENTITY.split(',').includes(email.Source)){
+      return res.status(400).end(addressNotVerifiedErrorXML.replace('{{IDENTITY}}', email.Source))
+  }
+
+  // email['Message.Body.Text.Data'] = hbs.compile(template.TextPart)(data);
+  const to = email.Destination.ToAddresses instanceof Object ? Object.values(email.Destination.ToAddresses.member) : [];
+  const cc = email.Destination.CcAddresses instanceof Object ? Object.values(email.Destination.CcAddresses.member) : [];
+  const bcc = email.Destination.BccAddresses instanceof Object ? Object.values(email.Destination.BccAddresses.member) : [];
+
+  console.log(to.length ,cc.length,  bcc.length);
+
+  if(to.length === 0 && cc.length === 0 && bcc.length === 0) {
+    return res.status(400).end(blankToErrorXml);
+  }
 
   // messageid: 01010162f28582fd-d98807ac-e9a6-4e2d-b0a5-5938a60331ee-000000
   return Template
@@ -22,7 +68,10 @@ exports.SendTemplatedEmail = (req, res, next) => {
       raw: true
     })
     .then(template => {
-      const email = _.omit(Object.unflatten(req.body), ['TemplateData', 'Template'])
+      if (!template) {
+        return res.status(400)
+          .end(templateNotExistXml.replace('{{Template}}', req.body.Template));
+      }
 
       const data = JSON.parse(req.body.TemplateData)
       email.Message = {
@@ -35,12 +84,11 @@ exports.SendTemplatedEmail = (req, res, next) => {
           }
         }
       }
-      // email['Message.Body.Text.Data'] = hbs.compile(template.TextPart)(data);
 
       return ses(Object.assign(email), req.body.Template)
         .then(r => res.end(successXML.replace('{{MessageId}}', r.messageId)))
-        .catch(next)
     })
+    .catch(next)
 }
 
 exports.create = (req, res, next) => {

@@ -23,56 +23,53 @@ n lts
 
 ```
 
-Step 3 : Install sequelize
-```sh
-npm install sequelize-cli
-npm install sequelize-cli -g
-
-```
 Step 4 : Install emailq.
 ```sh
 npm install -g emailq
 ```
 
-Run emailq manually
+Step 5: Run emailq manually
 
 ```sh
 emailq
 ```
 
-Run emailq on systemd
+Step 6: Run emailq on systemd
 
 ```sh
 cd /etc/nginx/conf.d/
-sudo nano mail.google.com.conf
+sudo nano ses.example.com.conf
 
 Paste the following 
 
 server {
  listen  80;
- server_name    mail.google.com;
+ server_name    ses.example.com;
  return         301 https://$server_name$request_uri;
 }
 
 server {
   listen 443 ssl;
   #include /etc/nginx/statsd;
-  server_name mail.google.com;
+  server_name ses.example.com;
   ssl on;
   ssl_certificate /etc/nginx/ssl/ssl-bundle.crt;
-  ssl_certificate_key /etc/nginx/ssl/mail.google.com.key;
+  ssl_certificate_key /etc/nginx/ssl/example.com-ssl.key;
 
     location / {
         proxy_pass http://127.0.0.1:1587;
     }
   }
 
-
-
+# test nginx settings
 sudo nginx -t
 sudo systemctl restart nginx.
 sudo systemctl status nginx.
+```
 
+Step 7: Create systemd unit: Systemd will keep emailq up and running
+
+```sh
 cd /etc/systemd/system
 sudo nano emailq.service
 
@@ -96,15 +93,19 @@ Group=gloryque
 [Install]
 WantedBy=multi-user.target
 
-
+# to check unit status
 sudo systemctl status emailq
+
+# start emailq on startup
 sudo systemctl enable emailq
+
+# start emailq now
 sudo systemctl start emailq
+
+# check emailq running status
 sudo systemctl status emailq
 
 ## to check fo error
 journalctl -u emailq -f
 journalctl -u emailq -l
-
-
 ```
