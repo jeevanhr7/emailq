@@ -13,7 +13,7 @@ if(!fs.existsSync(path.join(getUserHome(), '.emailq'))) {
 }
 
 const env = dotenv.config({ path: path.join(getUserHome(), '.emailq') });
-
+process.env.NODE_ENV = process.env.NODE_ENV || env.NODE_ENV || 'development';
 const config = {
   all: {
     env: process.env.NODE_ENV,
@@ -24,6 +24,7 @@ const config = {
     AWSEndPoint: process.env.AWSEndPoint || 'http://127.0.0.1:1587',
     AWSSecretKey: process.env.AWSSecretKey,
     AWSAccessKeyId: process.env.AWSAccessKeyId,
+    AccountId: 706391958311,
   },
   development: {
 

@@ -1,4 +1,6 @@
 const { Template } = require('../../conn/sqldb');
+const { AccountId } = require('../../config/environment');
+
 exports.index = (req, res, next) => Template
   .findAll({ raw: true }).then(templates => res.json(templates)).catch(next);
 
@@ -19,20 +21,20 @@ exports.create = (req, res, next) => {
       return res.end(successXML);
     })
     .catch(e => {
+
       var errorXml = `<ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
         <Error>
           <Type>Sender</Type>
           <Code>AlreadyExists</Code>
-          <Message>Template MyTemplate already exists for account id 831107063919</Message>
+          <Message>Template ${template} already exists for account id ${AccountId}${
+        e.name === 'SequelizeUniqueConstraintError' ? '500' : ''
+      }</Message>
         </Error>
         <RequestId>5f56719f-46d1-11e8-b0e5-6f6c0c46ee34</RequestId>
       </ErrorResponse>`;
-      return res.header({
-        'x-amzn-requestid': '5f56719f-46d1-11e8-b0e5-6f6c0c46ee34',
-        'date': 'Mon, 23 Apr 2018 08:36:08 GMT',
-        'content-length': '306',
-        'content-type': 'text/xml'
-      }).status(400).end(errorXml)
+
+      return res.status(400).end(errorXml)
+
     });
 }
 
@@ -51,7 +53,6 @@ exports.update = (req, res, next) => {
       return res.end(successXML);
     })
     .catch(e => {
-      console.log('eeee&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&', e);
       var errorXml = `<ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
         <Error>
           <Type>Sender</Type>

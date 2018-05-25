@@ -15,7 +15,7 @@ const logger = require('./components/logger');
 module.exports = function (app) {
   app.use('/', (req, res, next) => {
     if (req.method !== 'POST') return next();
-
+    console.log('request', req.body.Action)
     switch (req.body.Action) {
       case 'CreateTemplate': return TemplateCtrl.create(req, res, next);
       case 'SendEmail': return EmailCtrl.create(req, res, next);
@@ -44,9 +44,6 @@ module.exports = function (app) {
     return res.status(500).json({ message: err.message, stack: err.stack });
   });
 
-  app.use((req, res, next) => {
-    console.log('request', req.body)
-    next()
-  })
+
   app.route('/*').get((req, res) => res.status(404).json({ message: '404' }));
 };

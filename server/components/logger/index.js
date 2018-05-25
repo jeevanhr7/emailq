@@ -19,5 +19,6 @@ const logger = new winston.Logger({
   ]
 })
 
-if (config.NODE_ENV === 'development') logger.add(winston.transports.Console)
-module.exports = logger
+if (config.NODE_ENV === 'development') logger.add(winston.transports.Console);
+
+module.exports = logger;

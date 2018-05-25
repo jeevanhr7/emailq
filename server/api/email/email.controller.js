@@ -43,17 +43,18 @@ const addressNotVerifiedErrorXML = `<ErrorResponse xmlns="http://ses.amazonaws.c
 
 exports.SendTemplatedEmail = (req, res, next) => {
   const email = _.omit(Object.unflatten(req.body), ['TemplateData', 'Template'])
-  console.log({ email });
-  if(!IDENTITY.split(',').includes(email.Source)){
-      return res.status(400).end(addressNotVerifiedErrorXML.replace('{{IDENTITY}}', email.Source))
+  console.log(!IDENTITY.split(',').includes(email.Source),email.Source);
+  const regex = /\S+[a-z0-9]@[a-z0-9\.]+/img
+  console.log(!IDENTITY.split(',').includes(email.Source.match(regex)[0]), email.Source.match(regex)[0])
+
+  if(!IDENTITY.split(',').includes(email.Source.match(regex)[0])){
+    return res.status(400).end(addressNotVerifiedErrorXML.replace('{{IDENTITY}}', email.Source))
   }
 
   // email['Message.Body.Text.Data'] = hbs.compile(template.TextPart)(data);
   const to = email.Destination.ToAddresses instanceof Object ? Object.values(email.Destination.ToAddresses.member) : [];
   const cc = email.Destination.CcAddresses instanceof Object ? Object.values(email.Destination.CcAddresses.member) : [];
   const bcc = email.Destination.BccAddresses instanceof Object ? Object.values(email.Destination.BccAddresses.member) : [];
-
-  console.log(to.length ,cc.length,  bcc.length);
 
   if(to.length === 0 && cc.length === 0 && bcc.length === 0) {
     return res.status(400).end(blankToErrorXml);
@@ -68,6 +69,7 @@ exports.SendTemplatedEmail = (req, res, next) => {
       raw: true
     })
     .then(template => {
+      console.log('!template', !template)
       if (!template) {
         return res.status(400)
           .end(templateNotExistXml.replace('{{Template}}', req.body.Template));
@@ -86,7 +88,10 @@ exports.SendTemplatedEmail = (req, res, next) => {
       }
 
       return ses(Object.assign(email), req.body.Template)
-        .then(r => res.end(successXML.replace('{{MessageId}}', r.messageId)))
+        .then(r => {
+          console.log('email sent', r)
+          res.end(successXML.replace('{{MessageId}}', r.messageId))
+        })
     })
     .catch(next)
 }
