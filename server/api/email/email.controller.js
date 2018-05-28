@@ -1,6 +1,7 @@
 const _ = require('lodash')
 const ses = require('../../conn/ses')
 const hbs = require('handlebars')
+const addressparser = require('addressparser');
 const {Template} = require('../../conn/sqldb')
 const { IDENTITY,AWSRegion } = require('../../config/environment')
 
@@ -40,14 +41,9 @@ const addressNotVerifiedErrorXML = `<ErrorResponse xmlns="http://ses.amazonaws.c
   <RequestId>dcab8787-5f3e-11e8-90b8-b713caf4b232</RequestId>
 </ErrorResponse>`;
 
-
 exports.SendTemplatedEmail = (req, res, next) => {
-  const email = _.omit(Object.unflatten(req.body), ['TemplateData', 'Template'])
-  console.log(!IDENTITY.split(',').includes(email.Source),email.Source);
-  const regex = /\S+[a-z0-9]@[a-z0-9\.]+/img
-  console.log(!IDENTITY.split(',').includes(email.Source.match(regex)[0]), email.Source.match(regex)[0])
-
-  if(!IDENTITY.split(',').includes(email.Source.match(regex)[0])){
+  const email = _.omit(Object.unflatten(req.body), ['TemplateData', 'Template']);
+  if(!IDENTITY.split(',').includes(addressparser(email.Source)[0].address)) {
     return res.status(400).end(addressNotVerifiedErrorXML.replace('{{IDENTITY}}', email.Source))
   }
 
@@ -69,7 +65,7 @@ exports.SendTemplatedEmail = (req, res, next) => {
       raw: true
     })
     .then(template => {
-      console.log('!template', !template)
+      console.log('!template', !template);
       if (!template) {
         return res.status(400)
           .end(templateNotExistXml.replace('{{Template}}', req.body.Template));
@@ -93,7 +89,10 @@ exports.SendTemplatedEmail = (req, res, next) => {
           res.end(successXML.replace('{{MessageId}}', r.messageId))
         })
     })
-    .catch(next)
+    .catch(err => {
+      console.log('x', err)
+      next(err)
+    })
 }
 
 exports.create = (req, res, next) => {
