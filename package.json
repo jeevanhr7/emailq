@@ -8,9 +8,10 @@
     "test": "mocha server/api/**/*.spec.js",
     "lint": "eslint --fix --ext .js --ignore-path .gitignore .",
     "sequlize": "sequelize db:migrate",
-    "dev": "node ./server/app",
+    "dev": "nodemon --ignore node_modules/ -e js ./server/app",
     "maildev": "maildev",
     "create-template": "aws ses create-template --cli-input-json file://server/api/template/data/CreateTemplate.cmd.json  --endpoint-url http://localhost:1587 --debug",
+    "update-template": "aws ses update-template --cli-input-json file://server/api/template/data/CreateTemplate.cmd.json --debug",
     "send-email": "aws ses send-email   --from \"john@gmail.com\"   --destination \"ToAddresses=manjeshpv@gmail.com\"   --message \"Subject={Data=from ses,Charset=utf8},Body={Text={Data=ses says hi,Charset=utf8},Html={Data=,Charset=utf8}}\" --endpoint-url http://localhost:1587 --debug",
     "send-templated-email": "aws ses send-templated-email --cli-input-json file://server/api/template/data/myemail.cmd.json --endpoint-url http://localhost:1587 --debug",
     "send-bulk-templated-email": "aws ses send-bulk-templated-email --cli-input-json file://server/api/template/data/blukemail.cmd.json --endpoint-url http://localhost:1587 --debug",
@@ -38,7 +39,6 @@
   "homepage": "https://github.com/manjeshpv/emailq#readme",
   "dependencies": {
     "addressparser": "^1.0.1",
-    "aws-sdk": "^2.232.1",
     "body-parser": "^1.18.3",
     "debug": "^3.1.0",
     "dotenv": "^5.0.1",
@@ -57,7 +57,10 @@
     "winston-raven-sentry": "^1.0.1"
   },
   "devDependencies": {
+    "aws-sdk": "^2.232.1",
+    "chai": "^4.1.2",
     "eslint": "^4.19.1",
+    "eslint-config-airbnb": "^15.1.0",
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.7.0",
     "got": "^6.7.1",
@@ -66,7 +69,6 @@
     "maildev": "^1.0.0-rc3",
     "mocha": "^3.3.0",
     "nodemon": "^1.11.0",
-    "precommit-hook": "^3.0.0",
-    "eslint-config-airbnb": "^15.1.0"
+    "precommit-hook": "^3.0.0"
   }
 }

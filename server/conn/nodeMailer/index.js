@@ -20,7 +20,7 @@ if (Number(options.port) === 1025) delete options.auth;
 const transporter = nodemailer.createTransport(options);
 transporter.use('compile', htmlToText());
 
-function ses(email, TemplateName = false) {
+function nodeMailer(email, TemplateName = false) {
   const { Source: from } = email;
   const m = email;
   const to = Object.values(m.Destination.ToAddresses.member);
@@ -65,4 +65,4 @@ function ses(email, TemplateName = false) {
   });
 }
 
-module.exports = ses;
+module.exports = nodeMailer;

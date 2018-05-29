@@ -26,8 +26,8 @@ exports.create = (req, res) => {
           <Type>Sender</Type>
           <Code>AlreadyExists</Code>
           <Message>Template ${template.TemplateName} already exists for account id ${AccountId}${
-        e.name === 'SequelizeUniqueConstraintError' ? '500' : ''
-      }</Message>
+  e.name === 'SequelizeUniqueConstraintError' ? '500' : ''
+}</Message>
 
         </Error>
         <RequestId>5f56719f-46d1-11e8-b0e5-6f6c0c46ee34</RequestId>
@@ -40,7 +40,13 @@ exports.create = (req, res) => {
 exports.update = (req, res) => {
   const { Template: template } = Object.unflatten(req.body);
   return Template
-    .update(template, { where: { TemplateName: template.TemplateName } })
+    .find({ where: { TemplateName: template.TemplateName } })
+    .then((result) => {
+      if (result) {
+        return Template.update(template, { where: { TemplateName: template.TemplateName } });
+      }
+      return Promise.reject();
+    })
     .then(() => {
       const successXML = `<UpdateTemplateResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
   <UpdateTemplateResult/>
@@ -53,13 +59,13 @@ exports.update = (req, res) => {
     })
     .catch(() => {
       const errorXml = `<ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
-        <Error>
-          <Type>Sender</Type>
-          <Code>AlreadyExists</Code>
-          <Message>Template MyTemplate already exists for account id 831107063919</Message>
-        </Error>
-        <RequestId>5f56719f-46d1-11e8-b0e5-6f6c0c46ee34</RequestId>
-      </ErrorResponse>`;
+  <Error>
+    <Type>Sender</Type>
+    <Code>TemplateDoesNotExist</Code>
+    <Message>Template MyTemplate does not exist.</Message>
+  </Error>
+  <RequestId>14bc972f-632a-11e8-8f45-29aadae51f12</RequestId>
+</ErrorResponse>`;
       return res.header({
         'x-amzn-requestid': '5f56719f-46d1-11e8-b0e5-6f6c0c46ee34',
         date: 'Mon, 23 Apr 2018 08:36:08 GMT',

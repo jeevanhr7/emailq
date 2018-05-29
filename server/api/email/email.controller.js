@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 const _ = require('lodash');
-const ses = require('../../conn/ses');
+const ses = require('../../conn/nodeMailer');
 const hbs = require('handlebars');
 const { Template } = require('../../conn/sqldb');
 const { IDENTITY, AWSRegion } = require('../../config/environment');

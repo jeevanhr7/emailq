@@ -1,0 +1,11 @@
+const aws = require('aws-sdk');
+const { AWSRegion, AWSEndPoint, AWSAccessKeyId, AWSSecretKey } = require('./../../config/environment');
+
+const ses = new aws.SES({
+  region: AWSRegion,
+  endpoint: AWSEndPoint,
+  apiVersion: '2010-12-01',
+  accessKeyId: AWSAccessKeyId,
+  secretAccessKey: AWSSecretKey,
+});
+module.exports = ses;
