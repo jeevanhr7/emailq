@@ -1,4 +1,4 @@
-module.exports = function (sequelize, DataTypes) {
+module.exports = (sequelize, DataTypes) => {
   const Template = sequelize.define('Template', {
     id: {
       type: DataTypes.INTEGER(14),
@@ -19,10 +19,6 @@ module.exports = function (sequelize, DataTypes) {
     updatedAt: 'UpdatedAt',
     underscored: true,
   });
-
-  Template.associate = function (db) {
-
-  };
 
   return Template;
 };

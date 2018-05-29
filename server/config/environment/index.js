@@ -3,13 +3,13 @@ const path = require('path');
 const dotenv = require('dotenv');
 
 function getUserHome() {
-  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+  return process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
 }
 
 const root = path.normalize(`${__dirname}/../../..`);
 
-if(!fs.existsSync(path.join(getUserHome(), '.emailq'))) {
-  fs.writeFileSync(path.join(getUserHome(), '.emailq'),"SMTP_PORT=1025")
+if (!fs.existsSync(path.join(getUserHome(), '.emailq'))) {
+  fs.writeFileSync(path.join(getUserHome(), '.emailq'), 'SMTP_PORT=1025');
 }
 
 const env = dotenv.config({ path: path.join(getUserHome(), '.emailq') });
@@ -26,19 +26,13 @@ const config = {
     AWSAccessKeyId: process.env.AWSAccessKeyId,
     AccountId: 706391958311,
   },
-  development: {
+  development: {},
 
-  },
+  staging: {},
 
-  staging: {
-
-  },
-
-  production: {
-
-  },
+  production: {},
 };
 
-const conf = Object.assign({}, env.parsed, config.all,  config[process.env.NODE_ENV || 'development']);
+const conf = Object.assign({}, env.parsed, config.all, config[process.env.NODE_ENV || 'development']);
 
 module.exports = conf;

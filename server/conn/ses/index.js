@@ -1,10 +1,9 @@
-const nodemailer = require('nodemailer')
-const {htmlToText} = require('nodemailer-html-to-text')
+const nodemailer = require('nodemailer');
+const { htmlToText } = require('nodemailer-html-to-text');
 
-const config = require('../../config/environment')
+const config = require('../../config/environment');
 
-process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0'
-
+process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 const options = {
   host: config.SMTP_HOST,
   port: config.SMTP_PORT,
@@ -12,58 +11,58 @@ const options = {
   ignoreTLS: config.SMTP_IGNORETLS === 'true',
   auth: {
     user: config.SMTP_AUTH_USER,
-    pass: config.SMTP_AUTH_PASS
-  }
-}
+    pass: config.SMTP_AUTH_PASS,
+  },
+};
 
-if (Number(options.port) === 1025) delete options.auth
+if (Number(options.port) === 1025) delete options.auth;
 
-let transporter = nodemailer.createTransport(options)
-transporter.use('compile', htmlToText())
+const transporter = nodemailer.createTransport(options);
+transporter.use('compile', htmlToText());
 
-function ses (email, TemplateName = false) {
-  const { Source: from } = email
-  const m = email
-  const to = Object.values(m.Destination.ToAddresses.member)
+function ses(email, TemplateName = false) {
+  const { Source: from } = email;
+  const m = email;
+  const to = Object.values(m.Destination.ToAddresses.member);
 
-  const subject = email.Message.Subject.Data
-  const html = email.Message.Body.Html.Data
+  const subject = email.Message.Subject.Data;
+  const html = email.Message.Body.Html.Data;
 
-  if (!from) throw new Error('from missing')
+  if (!from) throw new Error('from missing');
 
-  let mail = {
+  const mail = {
     from,
     to,
-    subject
-  }
+    subject,
+  };
 
-  const cc = m.Destination.CcAddresses ? Object.values(m.Destination.CcAddresses.member) : []
-  if (cc.length) mail.cc = cc
+  const cc = m.Destination.CcAddresses ? Object.values(m.Destination.CcAddresses.member) : [];
+  if (cc.length) mail.cc = cc;
 
-  const bcc = m.Destination.BccAddresses ? Object.values(m.Destination.BccAddresses.member) : []
-  if (bcc.length) mail.bcc = bcc
+  const bcc = m.Destination.BccAddresses ? Object.values(m.Destination.BccAddresses.member) : [];
+  if (bcc.length) mail.bcc = bcc;
 
-  if (subject) mail.subject = subject
-  if (html) mail.html = html
+  if (subject) mail.subject = subject;
+  if (html) mail.html = html;
 
   // if (email.Message.Body.Text.Data) mail.text = email.Message.Body.Text.Data
 
   // Tracking in postal https://github.com/atech/postal
   if (TemplateName) {
     mail.headers = {
-      'x-postal-tag': TemplateName
-    }
+      'x-postal-tag': TemplateName,
+    };
   }
 
   return new Promise((resolve, reject) => {
-    transporter.sendMail(mail, (error, info) => {
-      if (error) return reject(error)
+    transporter.sendMail(mail, (error, i) => {
+      if (error) return reject(error);
+      const info = i;
+      info.messageId = info.messageId.slice(1, -1);
 
-      info.messageId = info.messageId.slice(1, -1)
-
-      return resolve(info)
-    })
-  })
+      return resolve(info);
+    });
+  });
 }
 
-module.exports = ses
+module.exports = ses;

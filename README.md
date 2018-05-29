@@ -2,15 +2,22 @@
 
 EmailQ is an open source email server compatible with Amazon SES APIs
 
-# Emailq Server Installation
+##### EmailQ Server Installation
 
-Step 1 : Create  .emailq file and add the following
-```sh 
-  ## Postal SMTP
+Step 1 : Create .emailq file and add the following
+```sh
+  
+  AWSAccessKeyId="ABCD"
+  AWSSecretKey="ABCD"
+  AWSEndPoint=http://localhost:1587
+  AWSRegion=us-west-2
+  IDENTITY=youremail@yourdomain.com
+  
   SMTP_HOST=smtp.gmail.com
   SMTP_SECURE=false
   SMTP_IGNORETLS=true
   SMTP_PORT=587
+  # you can use SMTP_PORT=1025 for development with maildev `npm i -g maildev; maildev`
   SMTP_AUTH_USER='majeshpv@gmail.com'
   SMTP_AUTH_PASS='screat'
 ```
@@ -25,13 +32,15 @@ n lts
 
 Step 4 : Install emailq.
 ```sh
-npm install -g emailq
+Clone the emailq project from :
+https://github.com/manjeshpv/emailq
 ```
 
-Step 5: Run emailq manually
+Step 5: Install node packages in emailq project
 
 ```sh
-emailq
+cd emailq
+npm install
 ```
 
 Step 6: Run emailq on systemd

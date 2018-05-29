@@ -5,7 +5,7 @@ const Sequelize = require('sequelize');
 const config = require('../../config/environment');
 
 function getUserHome() {
-  return process.env[(process.platform == 'win32') ? 'USERPROFILE' : 'HOME'];
+  return process.env[(process.platform === 'win32') ? 'USERPROFILE' : 'HOME'];
 }
 
 const sqlDefaults = {
@@ -17,8 +17,9 @@ const db = {
   sequelize: new Sequelize('emailq', null, null, sqlDefaults),
 };
 
-['Template'].forEach(model =>
-  (db[model] = db.sequelize.import(`../../api/${_.camelCase(model)}/${_.camelCase(model)}.model.js`)));
+['Template'].forEach((model) => {
+  db[model] = db.sequelize.import(`../../api/${_.camelCase(model)}/${_.camelCase(model)}.model.js`);
+});
 
 
 Object.keys(db).forEach((modelName) => {

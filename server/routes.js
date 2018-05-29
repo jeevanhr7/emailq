@@ -2,7 +2,7 @@
 /**
  * Main application routes
  */
-
+const debug = require('debug');
 const { name, version } = require('../package.json');
 
 const { IDENTITY } = require('./config/environment');
@@ -12,10 +12,12 @@ const EmailCtrl = require('./api/email/email.controller');
 const template = require('./api/template');
 const logger = require('./components/logger');
 
-module.exports = function (app) {
+const log = debug('emailq.routes');
+
+module.exports = (app) => {
   app.use('/', (req, res, next) => {
     if (req.method !== 'POST') return next();
-    console.log('request', req.body.Action)
+    log('request', req.body.Action);
     switch (req.body.Action) {
       case 'CreateTemplate': return TemplateCtrl.create(req, res, next);
       case 'SendEmail': return EmailCtrl.create(req, res, next);
@@ -25,12 +27,13 @@ module.exports = function (app) {
       default: return next();
     }
   });
-  app.use('/templates', template)
+  app.use('/templates', template);
   app.get('/emails', (req, res) => res.json(IDENTITY.split(',')));
   app.get('/', (req, res) => res.json({ name, version }));
   app.use(logger.transports.sentry.raven.errorHandler());
   // All undefined asset or api routes should return a 404
   app.use((e, req, res, next) => {
+    if (!next) return false;
     const err = e;
     const { body, headers, user } = req;
 

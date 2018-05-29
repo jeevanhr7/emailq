@@ -5,16 +5,21 @@
   "main": "index.js",
   "scripts": {
     "postinstall": "node ./node_modules/sequelize-cli/lib/sequelize db:migrate",
-    "test": "NODE_ENV=test  mocha server/api/**/*.spec.js",
-    "lint": "standard",
+    "test": "mocha server/api/**/*.spec.js",
+    "lint": "eslint --fix --ext .js --ignore-path .gitignore .",
     "sequlize": "sequelize db:migrate",
-    "dev": "node ./scripts/dev.js",
+    "dev": "node ./server/app",
     "maildev": "maildev",
     "create-template": "aws ses create-template --cli-input-json file://server/api/template/data/CreateTemplate.cmd.json  --endpoint-url http://localhost:1587 --debug",
     "send-email": "aws ses send-email   --from \"john@gmail.com\"   --destination \"ToAddresses=manjeshpv@gmail.com\"   --message \"Subject={Data=from ses,Charset=utf8},Body={Text={Data=ses says hi,Charset=utf8},Html={Data=,Charset=utf8}}\" --endpoint-url http://localhost:1587 --debug",
     "send-templated-email": "aws ses send-templated-email --cli-input-json file://server/api/template/data/myemail.cmd.json --endpoint-url http://localhost:1587 --debug",
-    "send-bulk-templated-email": "aws ses send-bulk-templated-email --cli-input-json file://server/api/template/data/blukemail.cmd.json --endpoint-url http://localhost:1587 --debug"
+    "send-bulk-templated-email": "aws ses send-bulk-templated-email --cli-input-json file://server/api/template/data/blukemail.cmd.json --endpoint-url http://localhost:1587 --debug",
+    "validate": "npm ls"
   },
+  "pre-commit": [
+    "lint",
+    "npm run test"
+  ],
   "bin": {
     "emailq": "./bin/emailq.js"
   },
@@ -32,27 +37,36 @@
   },
   "homepage": "https://github.com/manjeshpv/emailq#readme",
   "dependencies": {
+    "addressparser": "^1.0.1",
     "aws-sdk": "^2.232.1",
+    "body-parser": "^1.18.3",
+    "debug": "^3.1.0",
     "dotenv": "^5.0.1",
     "express": "^4.16.3",
     "handlebars": "^4.0.11",
+    "lodash": "^4.17.10",
     "nodemailer": "^3.1.1",
     "nodemailer-html-to-text": "^2.1.0",
     "sequelize": "^4.37.6",
     "sequelize-cli": "^4.0.0",
     "sqlite": "^2.9.1",
+    "sqlite3": "^4.0.0",
     "supertest": "^3.0.0",
     "winston": "^2.2.0",
     "winston-daily-rotate-file": "^1.0.1",
     "winston-raven-sentry": "^1.0.1"
   },
   "devDependencies": {
+    "eslint": "^4.19.1",
+    "eslint-config-airbnb-base": "^12.1.0",
+    "eslint-plugin-import": "^2.7.0",
     "got": "^6.7.1",
     "http-proxy-middleware": "0.12.0",
     "istanbul": "^0.4.5",
     "maildev": "^1.0.0-rc3",
     "mocha": "^3.3.0",
     "nodemon": "^1.11.0",
-    "standard": "^11.0.1"
+    "precommit-hook": "^3.0.0",
+    "eslint-config-airbnb": "^15.1.0"
   }
 }
