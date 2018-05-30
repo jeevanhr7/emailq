@@ -2,9 +2,11 @@
 const _ = require('lodash');
 const ses = require('../../conn/nodeMailer');
 const hbs = require('handlebars');
+const Ajv = require('ajv');
 const { Template } = require('../../conn/sqldb');
 const { IDENTITY, AWSRegion } = require('../../config/environment');
 const debug = require('debug');
+const unflatten = require('../../components/utils/unflatten');
 
 const log = debug('email.controller:api');
 let successXML = `<SendTemplatedEmailResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
@@ -43,20 +45,55 @@ const addressNotVerifiedErrorXML = `<ErrorResponse xmlns="http://ses.amazonaws.c
   <RequestId>dcab8787-5f3e-11e8-90b8-b713caf4b232</RequestId>
 </ErrorResponse>`;
 
+const wrongEmailxml = `<ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
+  <Error>
+    <Type>Sender</Type>
+    <Code>InvalidParameterValue</Code>
+    <Message>Missing final '@domain'</Message>
+  </Error>
+  <RequestId>c1f0214e-63f4-11e8-b3d8-8775242d3656</RequestId>
+</ErrorResponse>`;
+
+const validEmails = (emails) => {
+  const ajv = new Ajv();
+  ajv.addSchema({
+    title: 'Emails',
+    type: 'array',
+    items: {
+      type: 'string',
+      format: 'email',
+    },
+  }, 'Emails');
+
+  const valid = ajv.validate('Emails', emails);
+
+  // if (!valid) throw new Error(ajv.errorsText());
+  return valid;
+};
 exports.SendTemplatedEmail = (req, res, next) => {
-  const email = _.omit(Object.unflatten(req.body), ['TemplateData', 'Template']);
+  const body = unflatten(req.body);
+
+  const email = _.omit(body, ['TemplateData', 'Template']);
+
   log(!IDENTITY.split(',').includes(email.Source), email.Source);
   const regex = /\S+[a-z0-9]@[a-z0-9.]+/img;
   log(!IDENTITY.split(',').includes(email.Source.match(regex)[0]), email.Source.match(regex)[0]);
-
   if (!IDENTITY.split(',').includes(email.Source.match(regex)[0])) {
     return res.status(400).end(addressNotVerifiedErrorXML.replace('{{IDENTITY}}', email.Source));
   }
-
   // email['Message.Body.Text.Data'] = hbs.compile(template.TextPart)(data);
-  const to = email.Destination.ToAddresses instanceof Object ? Object.values(email.Destination.ToAddresses.member) : [];
-  const cc = email.Destination.CcAddresses instanceof Object ? Object.values(email.Destination.CcAddresses.member) : [];
-  const bcc = email.Destination.BccAddresses instanceof Object ? Object.values(email.Destination.BccAddresses.member) : [];
+  let to = [];
+  let cc = [];
+  let bcc = [];
+
+  to = email.Destination.ToAddresses instanceof Object ? Object.values(email.Destination.ToAddresses.member) : [];
+  cc = email.Destination.CcAddresses instanceof Object ? Object.values(email.Destination.CcAddresses.member) : [];
+  bcc = email.Destination.BccAddresses instanceof Object ? Object.values(email.Destination.BccAddresses.member) : [];
+
+  if (!validEmails([...to, ...cc, ...bcc])) {
+    return res.status(400).end(wrongEmailxml);
+  }
+
 
   if (to.length === 0 && cc.length === 0 && bcc.length === 0) {
     return res.status(400).end(blankToErrorXml);
@@ -95,7 +132,7 @@ exports.SendTemplatedEmail = (req, res, next) => {
           res.end(successXML.replace('{{MessageId}}', r.messageId));
         });
     })
-    .catch(next);
+    .catch(err => next(err));
 };
 
 exports.create = (req, res) => {

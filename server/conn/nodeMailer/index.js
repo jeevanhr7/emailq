@@ -23,7 +23,9 @@ transporter.use('compile', htmlToText());
 function nodeMailer(email, TemplateName = false) {
   const { Source: from } = email;
   const m = email;
-  const to = Object.values(m.Destination.ToAddresses.member);
+  const to = m.Destination.ToAddresses instanceof Object
+    ? Object.values(m.Destination.ToAddresses.member)
+    : [];
 
   const subject = email.Message.Subject.Data;
   const html = email.Message.Body.Html.Data;

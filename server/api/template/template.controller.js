@@ -1,12 +1,13 @@
 const { Template } = require('../../conn/sqldb');
 const { AccountId } = require('../../config/environment');
+const unflatten = require('../../components/utils/unflatten');
 
 exports.index = (req, res, next) => Template
   .findAll({ raw: true }).then(templates => res.json(templates)).catch(next);
 
 exports.create = (req, res) => {
   // check if template exists
-  const { Template: template } = Object.unflatten(req.body);
+  const { Template: template } = unflatten(req.body);
 
   return Template
     .create(template)
@@ -20,6 +21,7 @@ exports.create = (req, res) => {
 
       return res.end(successXML);
     })
+
     .catch((e) => {
       const errorXml = `<ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
         <Error>
@@ -38,7 +40,7 @@ exports.create = (req, res) => {
 };
 
 exports.update = (req, res) => {
-  const { Template: template } = Object.unflatten(req.body);
+  const { Template: template } = unflatten(req.body);
   return Template
     .find({ where: { TemplateName: template.TemplateName } })
     .then((result) => {

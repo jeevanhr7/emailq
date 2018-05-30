@@ -11,10 +11,15 @@
     "dev": "nodemon --ignore node_modules/ -e js ./server/app",
     "maildev": "maildev",
     "create-template": "aws ses create-template --cli-input-json file://server/api/template/data/CreateTemplate.cmd.json  --endpoint-url http://localhost:1587 --debug",
-    "update-template": "aws ses update-template --cli-input-json file://server/api/template/data/CreateTemplate.cmd.json --debug",
+    "update-template": "aws ses update-template --cli-input-json file://server/api/template/data/CreateTemplate.cmd.json --endpoint-url http://localhost:1587  --debug",
     "send-email": "aws ses send-email   --from \"john@gmail.com\"   --destination \"ToAddresses=manjeshpv@gmail.com\"   --message \"Subject={Data=from ses,Charset=utf8},Body={Text={Data=ses says hi,Charset=utf8},Html={Data=,Charset=utf8}}\" --endpoint-url http://localhost:1587 --debug",
     "send-templated-email": "aws ses send-templated-email --cli-input-json file://server/api/template/data/myemail.cmd.json --endpoint-url http://localhost:1587 --debug",
     "send-bulk-templated-email": "aws ses send-bulk-templated-email --cli-input-json file://server/api/template/data/blukemail.cmd.json --endpoint-url http://localhost:1587 --debug",
+    "awscreate-template": "aws ses create-template --cli-input-json file://server/api/template/data/CreateTemplate.cmd.json  --debug",
+    "awsupdate-template": "aws ses update-template --cli-input-json file://server/api/template/data/CreateTemplate.cmd.json --debug",
+    "awssend-email": "aws ses send-email   --from \"john@gmail.com\"   --destination \"ToAddresses=manjeshpv@gmail.com\"   --message \"Subject={Data=from ses,Charset=utf8},Body={Text={Data=ses says hi,Charset=utf8},Html={Data=,Charset=utf8}}\"  --debug",
+    "awssend-templated-email": "aws ses send-templated-email --cli-input-json file://server/api/template/data/myemail.cmd.json --debug",
+    "awssend-bulk-templated-email": "aws ses send-bulk-templated-email --cli-input-json file://server/api/template/data/blukemail.cmd.json  --debug",
     "validate": "npm ls"
   },
   "pre-commit": [
@@ -39,6 +44,7 @@
   "homepage": "https://github.com/manjeshpv/emailq#readme",
   "dependencies": {
     "addressparser": "^1.0.1",
+    "ajv": "^6.5.0",
     "body-parser": "^1.18.3",
     "debug": "^3.1.0",
     "dotenv": "^5.0.1",

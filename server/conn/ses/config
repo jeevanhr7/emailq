@@ -8,4 +8,5 @@ const ses = new aws.SES({
   accessKeyId: AWSAccessKeyId,
   secretAccessKey: AWSSecretKey,
 });
+
 module.exports = ses;
