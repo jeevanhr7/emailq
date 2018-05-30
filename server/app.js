@@ -43,6 +43,8 @@ if (config.env !== 'test') {
     log(`## SMTP_IGNORETLS: ${config.SMTP_IGNORETLS || 'NA'}`);
     log(`## SMTP_AUTH_USER: ${config.SMTP_AUTH_USER || 'NA'}`);
     log(`## SMTP_AUTH_PASS: ${config.SMTP_AUTH_PASS || 'NA'}`);
+    log(`## EMAIL_IDENTITY: ${config.EMAIL_IDENTITY || 'NA'}`);
+    log(`## DOMAIN_IDENTITY: ${config.DOMAIN_IDENTITY || 'NA'}`);
     log('## Update SMTP settings in `~/.emailq` and restart server');
     log('## To start demo email server `npm i -g maildev && maildev`');
     log('##\n#######################################################\n');
