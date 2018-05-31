@@ -3,7 +3,7 @@ const { expect } = require('chai');
 const sesEmail = require('../template/data/CreateTemplate.cmd');
 const { Template } = require('../../conn/sqldb');
 const ses = require('../../conn/ses/config');
-const sampleSendEmailData = require('../template/data/myemail.cmd');
+const sampleSendEmailData = require('./data/sendTemplatedEmail.cmd');
 const unflatten = require('../../components/utils/unflatten');
 
 async function destroyTemplate() {
@@ -37,38 +37,43 @@ describe('SendTemplatedEmail', () => {
   });
 
   it('should throw error if source email Id is not an authorized email sender', (done) => {
-    sampleSendEmailData.Source = 'abc@abc.com';
-    ses.sendTemplatedEmail(sampleSendEmailData, (err) => {
+    ses.sendTemplatedEmail({ ...sampleSendEmailData, Source: 'abc@abc.com' }, (err) => {
       expect(err).to.have.property('statusCode', 400);
       expect(err).to.have.property('code', 'MessageRejected');
-      expect(err).to.have.property('message', 'Email address is not verified. The following identities failed the check in region US-WEST-2: abc@abc.com');
+      expect(err).to.have.property('message', 'Email address is not verified. The following ' +
+        'identities failed the check in region US-WEST-2: abc@abc.com');
       done();
     });
   });
 
   it('should throw error if no destination email addresses are provided ', (done) => {
-    sampleSendEmailData.Destination = {};
-    ses.sendTemplatedEmail(sampleSendEmailData, (err) => {
+    ses.sendTemplatedEmail({ ...sampleSendEmailData, Destination: {} }, (err) => {
       expect(err).to.have.property('statusCode', 400);
-      expect(err).to.have.property('code', 'InvalidParameterValue');
-      expect(err).to.have.property('message', "Missing required header 'To'.");
+      expect(err).to.have.property('code', 'ValidationError');
+      const message = '1 validation error detected: Value null at \'destination\' failed to sati' +
+        'sfy constraint: Member must not be null';
+      expect(err).to.have.property('message', message);
       done();
     });
   });
 
   it('should throw error if any destination email address is wrongly formatted  ', (done) => {
-    sampleSendEmailData.Destination.CcAddresses = ['testing'];
-    ses.sendTemplatedEmail(sampleSendEmailData, (err) => {
-      expect(err).to.have.property('statusCode', 400);
-      expect(err).to.have.property('code', 'InvalidParameterValue');
-      expect(err).to.have.property('message', "Missing final '@domain'");
-      done();
-    });
+    ses
+      .sendTemplatedEmail({
+        ...sampleSendEmailData,
+        Destination: {
+          ...sampleSendEmailData.Destination, CcAddresses: ['testing'],
+        },
+      }, (err) => {
+        expect(err).to.have.property('statusCode', 400);
+        expect(err).to.have.property('code', 'InvalidParameterValue');
+        expect(err).to.have.property('message', "Missing final '@domain'");
+        done();
+      });
   });
 
   it('should throw error if the template specified is not created', (done) => {
-    sampleSendEmailData.Template = 'test';
-    ses.sendTemplatedEmail(sampleSendEmailData, (err) => {
+    ses.sendTemplatedEmail({ ...sampleSendEmailData, Template: 'test' }, (err) => {
       expect(err).to.have.property('statusCode', 400);
       expect(err).to.have.property('code', 'TemplateDoesNotExist');
       expect(err).to.have.property('message', 'Template test does not exist');
