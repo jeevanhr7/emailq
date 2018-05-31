@@ -8,7 +8,7 @@
     "test": "NODE_ENV=test nyc --reporter=html --reporter=text mocha --opts .mocharc server/api/**/*.spec.js --exit",
     "coverage": "nyc report --reporter=text-lcov | coveralls",
     "lint": "eslint --fix --ext .js --ignore-path .gitignore .",
-    "sequlize": "sequelize db:migrate",
+    "migrate": "sequelize db:migrate",
     "dev": "nodemon --ignore node_modules/ -e js ./server/app",
     "maildev": "maildev",
     "create-template": "aws ses create-template --cli-input-json file://server/api/template/data/CreateTemplate.cmd.json  --endpoint-url http://localhost:1587 --debug",
