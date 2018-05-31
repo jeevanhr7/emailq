@@ -104,7 +104,7 @@ exports.SendTemplatedEmail = (req, res, next) => {
         },
       };
 
-      return nodeMailer(Object.assign(email), req.body.Template)
+      return nodeMailer(email, req.body.Template)
         .then((r) => {
           log('email sent', r);
           res.end(successXML.replace('{{MessageId}}', r.messageId));
@@ -161,7 +161,7 @@ exports.SendBulkTemplatedEmail = (req, res, next) => {
 
           // email['Message.Body.Text.Data'] = hbs.compile(template.TextPart)(data);
 
-          return nodeMailer(Object.assign(email, destination), req.body.Template);
+          return nodeMailer({ ...email, ...destination }, req.body.Template);
         });
 
       return Promise.all(promises).then((ress) => {
