@@ -1,7 +1,7 @@
 before_install:
   - cp .env.sample ~/.emailq
   - node server/app &
-  - maildev &
+  - npm run maildev &
 language: node_js
 node_js:
   - "8.11"
