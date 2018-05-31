@@ -1,7 +1,7 @@
 before_install:
   - cp .env.sample ~/.emailq
   - npm -g i sequelize-cli
-  - npm run migrate
+  - ./node_modules/sequelize-cli/lib/sequelize db:migrate
   - node server/app &
   - npm run maildev &
 language: node_js
