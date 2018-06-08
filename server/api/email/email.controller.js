@@ -1,4 +1,3 @@
-
 const Ajv = require('ajv');
 const _ = require('lodash');
 const debug = require('debug');
@@ -128,7 +127,7 @@ exports.create = (req, res) => nodeMailer(req.body)
     const rs = createxmlSuccess.replace('{{messageId}}', r.messageId);
     return res.end(rs);
   })
-// eslint-disable-next-line no-unused-vars
+  // eslint-disable-next-line no-unused-vars
   .catch(e => res.end(createxmlError));
 
 exports.SendBulkTemplatedEmail = (req, res, next) => {
@@ -197,7 +196,15 @@ function authenticateSourceEmail(email) {
 exports.SendRawEmail = async (req, res, next) => {
   const rawEmailContents = Buffer.from(req.body['RawMessage.Data'], 'base64').toString();
   const formattedMailContents = await simpleParser(rawEmailContents);
-  formattedMailContents.to = getEmails(formattedMailContents.to.value);
+  formattedMailContents.to = formattedMailContents.to
+    ? getEmails(formattedMailContents.to.value)
+    : [];
+  formattedMailContents.cc = formattedMailContents.cc
+    ? getEmails(formattedMailContents.cc.value)
+    : [];
+  formattedMailContents.bcc = formattedMailContents.bcc
+    ? getEmails(formattedMailContents.bcc.value)
+    : [];
   let source = req.body.Source;
   if (source) {
     if (!authenticateSourceEmail(source)) {
@@ -214,11 +221,6 @@ exports.SendRawEmail = async (req, res, next) => {
     return res.status(400).end(addressNotVerifiedErrorXML.replace('{{IDENTITY}}', source));
   }
 
-  // if (!formattedMailContents.Destination
-  //   || (formattedMailContents.Destination
-  //        && !Object.keys(formattedMailContents.Destination).length)) {
-  //   return res.status(400).end(blankDestination);
-  // }
   const { to = [], cc = [], bcc = [] } = formattedMailContents;
   if (!validEmails([...to, ...cc, ...bcc])) {
     log('wrongEmailxml');
