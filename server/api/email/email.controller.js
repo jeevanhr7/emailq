@@ -3,7 +3,7 @@ const _ = require('lodash');
 const debug = require('debug');
 const hbs = require('handlebars');
 const addressparser = require('addressparser');
-const simpleParser = require('mailparser').simpleParser;
+const { simpleParser } = require('mailparser');
 
 const { nodeMailer, nodeMailerSendRawEmail } = require('../../conn/nodeMailer');
 const { Template } = require('../../conn/sqldb');
