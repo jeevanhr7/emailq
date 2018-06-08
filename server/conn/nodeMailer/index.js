@@ -67,4 +67,18 @@ function nodeMailer(email, TemplateName = false) {
   });
 }
 
-module.exports = nodeMailer;
+function nodeMailerSendRawEmail(email) {
+  return new Promise((resolve, reject) => {
+    transporter.sendMail(email, (error, i) => {
+      if (error) return reject(error);
+      const info = i;
+      info.messageId = info.messageId.slice(1, -1);
+      return resolve(info);
+    });
+  });
+}
+
+module.exports = {
+  nodeMailer,
+  nodeMailerSendRawEmail,
+};

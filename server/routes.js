@@ -23,6 +23,7 @@ module.exports = (app) => {
       case 'SendEmail': return EmailCtrl.create(req, res, next);
       case 'SendBulkTemplatedEmail': return EmailCtrl.SendBulkTemplatedEmail(req, res, next);
       case 'SendTemplatedEmail': return EmailCtrl.SendTemplatedEmail(req, res, next);
+      case 'SendRawEmail': return EmailCtrl.SendRawEmail(req, res, next);
       case 'UpdateTemplate': return TemplateCtrl.update(req, res, next);
       default: return next();
     }

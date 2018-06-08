@@ -1,5 +1,17 @@
 const { AWSRegion } = require('../../config/environment');
 
+function generateSendRawEmailSuccessXMLResponse(messageId) {
+  return `
+    <SendRawEmailResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
+      <SendRawEmailResult>
+        <MessageId>${messageId}</MessageId>
+      </SendRawEmailResult>
+      <ResponseMetadata>
+        <RequestId>5ca81a16-6b01-11e8-9ec0-671894d16a7b</RequestId>
+      </ResponseMetadata>
+    </SendRawEmailResponse>`;
+}
+
 module.exports = () => ({
 
   blankDestination: `<ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
@@ -104,4 +116,6 @@ module.exports = () => ({
       </Error>
       <RequestId>fd3ae762-2563-11df-8cd4-6d4e828a9ae8</RequestId>
     </ErrorResponse> `,
+  sendRawEmailSuccessXMLResponse: generateSendRawEmailSuccessXMLResponse,
 });
+

@@ -4,12 +4,21 @@ const _ = require('lodash');
 const debug = require('debug');
 const hbs = require('handlebars');
 const addressparser = require('addressparser');
+const simpleParser = require('mailparser').simpleParser;
 
-const nodeMailer = require('../../conn/nodeMailer');
+const { nodeMailer, nodeMailerSendRawEmail } = require('../../conn/nodeMailer');
 const { Template } = require('../../conn/sqldb');
 const {
-  blankDestination, blankToErrorXml, successXML, templateNotExistXml, addressNotVerifiedErrorXML,
-  wrongEmailxml, bulkTemplatedEmailSuccessXML, createxmlSuccess, createxmlError,
+  blankDestination,
+  blankToErrorXml,
+  successXML,
+  templateNotExistXml,
+  addressNotVerifiedErrorXML,
+  wrongEmailxml,
+  bulkTemplatedEmailSuccessXML,
+  createxmlSuccess,
+  createxmlError,
+  sendRawEmailSuccessXMLResponse,
 } = require('./email.response')();
 const { DOMAIN_IDENTITY, EMAIL_IDENTITY } = require('../../config/environment');
 
@@ -172,4 +181,42 @@ exports.SendBulkTemplatedEmail = (req, res, next) => {
       })
         .catch(next);
     });
+};
+
+function getEmails(addresses) {
+  return addresses.filter(email => email.address && email.address.trim() !== '').map(email => email.address);
+}
+
+exports.SendRawEmail = async (req, res, next) => {
+  const rawEmailContents = Buffer.from(req.body['RawMessage.Data'], 'base64').toString();
+  // console.log(rawEmailContents);
+  const formattedMailContents = await simpleParser(rawEmailContents);
+  formattedMailContents.to = getEmails(formattedMailContents.to.value);
+  const source = getEmails(formattedMailContents.from.value)[0];
+
+  const domainAllowed = DOMAIN_IDENTITY.split(',').includes(source.split('@')[0]);
+  const emailAllowed = EMAIL_IDENTITY.split(',').includes(source);
+
+  if (!(domainAllowed || emailAllowed)) {
+    return res.status(400).end(addressNotVerifiedErrorXML.replace('{{IDENTITY}}', source));
+  }
+
+  // if (!formattedMailContents.Destination
+  //   || (formattedMailContents.Destination
+  //        && !Object.keys(formattedMailContents.Destination).length)) {
+  //   return res.status(400).end(blankDestination);
+  // }
+  const { to = [], cc = [], bcc = [] } = formattedMailContents;
+  if (!validEmails([...to, ...cc, ...bcc])) {
+    log('wrongEmailxml');
+    return res.status(400).end(wrongEmailxml);
+  }
+  //
+  if (to.length === 0 && cc.length === 0 && bcc.length === 0) {
+    log('no emails');
+    return res.status(400).end(blankToErrorXml);
+  }
+  return nodeMailerSendRawEmail(formattedMailContents)
+    .then(sentMailDetails => res.send(sendRawEmailSuccessXMLResponse(sentMailDetails.messageId)))
+    .catch(next);
 };

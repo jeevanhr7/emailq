@@ -2,9 +2,7 @@
   "Source": "manjeshpv@gmail.com",
   "Template": "MyTemplate",
   "Destination": {
-    "ToAddresses": [ "manjeshpv@gmail.com","manjeshpv@gmail.com"],
-    "CcAddresses": [ "manjeshpv@ssit.edu.in","manjeshpv@gmail.com"],
-    "BccAddresses": [ "manjesh@quetzal.in","manjeshpv@gmail.com"]
+    "ToAddresses": [ "manjeshpv@gmail.com"]
   },
   "TemplateData": "{ \"name\":\"Alejandro\", \"favoriteanimal\": \"alligator\" }"
 }
