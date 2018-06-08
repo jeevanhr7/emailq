@@ -19,6 +19,7 @@ const {
   createxmlSuccess,
   createxmlError,
   sendRawEmailSuccessXMLResponse,
+  missingFromParameterXMLResponse,
 } = require('./email.response')();
 const { DOMAIN_IDENTITY, EMAIL_IDENTITY } = require('../../config/environment');
 
@@ -187,17 +188,29 @@ function getEmails(addresses) {
   return addresses.filter(email => email.address && email.address.trim() !== '').map(email => email.address);
 }
 
+function authenticateSourceEmail(email) {
+  const domainAllowed = DOMAIN_IDENTITY.split(',').includes(email.split('@')[0]);
+  const emailAllowed = EMAIL_IDENTITY.split(',').includes(email);
+  return domainAllowed || emailAllowed;
+}
+
 exports.SendRawEmail = async (req, res, next) => {
   const rawEmailContents = Buffer.from(req.body['RawMessage.Data'], 'base64').toString();
-  // console.log(rawEmailContents);
   const formattedMailContents = await simpleParser(rawEmailContents);
   formattedMailContents.to = getEmails(formattedMailContents.to.value);
-  const source = getEmails(formattedMailContents.from.value)[0];
-
-  const domainAllowed = DOMAIN_IDENTITY.split(',').includes(source.split('@')[0]);
-  const emailAllowed = EMAIL_IDENTITY.split(',').includes(source);
-
-  if (!(domainAllowed || emailAllowed)) {
+  let source = req.body.Source;
+  if (source) {
+    if (!authenticateSourceEmail(source)) {
+      return res.status(400).end(addressNotVerifiedErrorXML.replace('{{IDENTITY}}', source));
+    }
+  }
+  if (formattedMailContents.from) {
+    source = getEmails(formattedMailContents.from.value)[0];
+  }
+  if (!source) {
+    return res.status(400).end(missingFromParameterXMLResponse);
+  }
+  if (!authenticateSourceEmail(source)) {
     return res.status(400).end(addressNotVerifiedErrorXML.replace('{{IDENTITY}}', source));
   }
 

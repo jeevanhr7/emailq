@@ -117,5 +117,14 @@ module.exports = () => ({
       <RequestId>fd3ae762-2563-11df-8cd4-6d4e828a9ae8</RequestId>
     </ErrorResponse> `,
   sendRawEmailSuccessXMLResponse: generateSendRawEmailSuccessXMLResponse,
+  missingFromParameterXMLResponse: `
+    <ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
+      <Error>
+        <Type>Sender</Type>
+        <Code>InvalidParameterValue</Code>
+        <Message>Missing required header 'From'.</Message>
+      </Error>
+      <RequestId>083e60b9-6b0e-11e8-92f8-ab3210304c63</RequestId>
+    </ErrorResponse>`,
 });
 
