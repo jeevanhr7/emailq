@@ -4,6 +4,7 @@ const sesEmail = require('../template/data/CreateTemplate.cmd');
 const { Template } = require('../../conn/sqldb');
 const ses = require('../../conn/ses/config');
 const sampleSendEmailData = require('./data/sendTemplatedEmail.cmd');
+const sampleSendBulkEmailData = require('./data/blukemail.cmd');
 const unflatten = require('../../components/utils/unflatten');
 
 async function destroyTemplate() {
@@ -81,3 +82,22 @@ describe('SendTemplatedEmail', () => {
     });
   });
 });
+
+describe('SendBulkTemplatedEmail', () => {
+  beforeEach(async () => {
+    await destroyTemplate();
+    await createTemplate(sesEmail);
+  });
+
+  it('should send email to many recipients', (done) => {
+    ses.sendBulkTemplatedEmail(sampleSendBulkEmailData, (err, res) => {
+      expect(res).to.have.property('ResponseMetadata');
+      expect(res.ResponseMetadata).to.have.property('RequestId');
+      expect(res.Status).to.be.an('array');
+      expect(res.Status).to.have.lengthOf(2);
+      done();
+    });
+  });
+
+});
+

@@ -145,7 +145,7 @@ exports.SendBulkTemplatedEmail = (req, res, next) => {
       raw: true,
     })
     .then((template) => {
-      const email = Object.unflatten(req.body);
+      const email = unflatten(req.body);
       log('email', email);
 
       const promises = Object
@@ -178,9 +178,8 @@ exports.SendBulkTemplatedEmail = (req, res, next) => {
 
 
         res.end(bulkTemplatedEmailSuccessXML.replace('{{response}}', response));
-      })
-        .catch(next);
-    });
+      });
+    }).catch(next);
 };
 
 function getEmails(addresses) {
