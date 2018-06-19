@@ -10,6 +10,7 @@ const errorXML = `<ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/
       </ErrorResponse>`;
 
 module.exports = (req, res, next) => {
+  if (!req.body.Action) return next();
   if (req.originalUrl === '/' && req.method === 'GET') return res.redirect('/client');
   if (req.query.AWSAccessKeyId === AWSAccessKeyId || (req.headers.authorization && AWSAccessKeyId === req.headers.authorization.split('=')[1].split('/')[0])) return next();
   return res.status(403).end(errorXML);

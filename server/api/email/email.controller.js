@@ -7,6 +7,7 @@ const { simpleParser } = require('mailparser');
 
 const { nodeMailer, nodeMailerSendRawEmail } = require('../../conn/nodeMailer');
 const { Template } = require('../../conn/sqldb');
+const logger = require('../../components/logger');
 const {
   blankDestination,
   blankToErrorXml,
@@ -122,13 +123,16 @@ exports.SendTemplatedEmail = (req, res, next) => {
     .catch(next);
 };
 
-exports.create = (req, res) => nodeMailer(req.body)
+exports.create = (req, res) => nodeMailer(unflatten(req.body))
   .then((r) => {
     const rs = createxmlSuccess.replace('{{messageId}}', r.messageId);
     return res.end(rs);
   })
   // eslint-disable-next-line no-unused-vars
-  .catch(e => res.end(createxmlError));
+  .catch((e) => {
+    logger.error('create', e, req.body);
+    res.end(createxmlError);
+  });
 
 exports.SendBulkTemplatedEmail = (req, res, next) => {
   const responseXML = `<member>

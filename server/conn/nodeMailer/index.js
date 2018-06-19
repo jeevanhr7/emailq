@@ -1,6 +1,5 @@
 const nodemailer = require('nodemailer');
 const { htmlToText } = require('nodemailer-html-to-text');
-
 const config = require('../../config/environment');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
@@ -28,7 +27,6 @@ function nodeMailer(email, TemplateName = false) {
     : [];
 
   const subject = email.Message.Subject.Data;
-  const html = email.Message.Body.Html.Data;
 
   if (!from) throw new Error('from missing');
 
@@ -38,6 +36,15 @@ function nodeMailer(email, TemplateName = false) {
     subject,
   };
 
+  if (email.Message.Body.Html && email.Message.Body.Html.Data) {
+    mail.html = email.Message.Body.Html.Data;
+  }
+
+
+  if (email.Message.Body.Text && email.Message.Body.Text.Data) {
+    mail.text = email.Message.Body.Text.Data;
+  }
+
   const cc = m.Destination.CcAddresses ? Object.values(m.Destination.CcAddresses.member) : [];
   if (cc.length) mail.cc = cc;
 
@@ -45,7 +52,6 @@ function nodeMailer(email, TemplateName = false) {
   if (bcc.length) mail.bcc = bcc;
 
   if (subject) mail.subject = subject;
-  if (html) mail.html = html;
 
   // if (email.Message.Body.Text.Data) mail.text = email.Message.Body.Text.Data
 

@@ -45,6 +45,8 @@ if (config.env !== 'test') {
     log(`## SMTP_AUTH_PASS: ${config.SMTP_AUTH_PASS || 'NA'}`);
     log(`## EMAIL_IDENTITY: ${config.EMAIL_IDENTITY || 'NA'}`);
     log(`## DOMAIN_IDENTITY: ${config.DOMAIN_IDENTITY || 'NA'}`);
+    log(`## DAILY_LIMIT: ${config.DAILY_LIMIT || 50000}`);
+    log(`## MAX_SEND_RATE: ${config.MAX_SEND_RATE || 14}`);
     log('## Update SMTP settings in `~/.emailq` and restart server');
     log('## To start demo email server `npm i -g maildev && maildev`');
     log('##\n#######################################################\n');

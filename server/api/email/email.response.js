@@ -126,5 +126,31 @@ module.exports = () => ({
       </Error>
       <RequestId>083e60b9-6b0e-11e8-92f8-ab3210304c63</RequestId>
     </ErrorResponse>`,
+  snsError: `<ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
+    <Error>
+      <Type>Sender</Type>
+      <Code>InvalidParameterValue</Code>
+      <Message>SNS topic arn:aws:sns:us-west-2:198037244630:mail-for-good-ses-complaint is invalid.</Message>
+    </Error>
+    <RequestId>de4df452-7387-11e8-bf4c-1d8e13aceb68</RequestId>
+  </ErrorResponse>`,
+  snsError1: `<ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
+    <Error>
+      <Type>Sender</Type>
+      <Code>InvalidParameterValue</Code>
+      <Message>Identity manjeshpv@gmail1.com is invalid. Must be a verified email address or domain.</Message>
+    </Error>
+    <RequestId>4f9c9bc4-7388-11e8-93f8-8f0e86fa95a9</RequestId>
+  </ErrorResponse>`,
+  listIdentityXMLNoResults: `
+    <ListIdentitiesResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
+      <ListIdentitiesResult>
+        <Identities/>
+      </ListIdentitiesResult>
+      <ResponseMetadata>
+        <RequestId>ed9bf8a3-7380-11e8-8d53-b12c812ff2c5</RequestId>
+      </ResponseMetadata>
+    </ListIdentitiesResponse>
+    `,
 });
 
