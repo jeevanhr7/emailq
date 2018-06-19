@@ -120,7 +120,10 @@ exports.SendTemplatedEmail = (req, res, next) => {
           res.end(successXML.replace('{{MessageId}}', r.messageId));
         });
     })
-    .catch(next);
+    .catch((err) => {
+      logger.error('SendTemplatedEmail', err, req.body);
+      return next(err);
+    });
 };
 
 exports.create = (req, res) => nodeMailer(unflatten(req.body))
@@ -129,8 +132,8 @@ exports.create = (req, res) => nodeMailer(unflatten(req.body))
     return res.end(rs);
   })
   // eslint-disable-next-line no-unused-vars
-  .catch((e) => {
-    logger.error('create', e, req.body);
+  .catch((err) => {
+    logger.error('create', err, req.body);
     res.end(createxmlError);
   });
 
@@ -183,7 +186,10 @@ exports.SendBulkTemplatedEmail = (req, res, next) => {
 
         res.end(bulkTemplatedEmailSuccessXML.replace('{{response}}', response));
       });
-    }).catch(next);
+    }).catch((err) => {
+      logger.error('SendTemplatedEmail', err, req.body);
+      return next(err);
+    });
 };
 
 function getEmails(addresses) {
@@ -236,5 +242,8 @@ exports.SendRawEmail = async (req, res, next) => {
   }
   return nodeMailerSendRawEmail(formattedMailContents)
     .then(sentMailDetails => res.send(sendRawEmailSuccessXMLResponse(sentMailDetails.messageId)))
-    .catch(next);
+    .catch((err) => {
+      logger.error('SendRawEmail', err, req.body);
+      return next(err);
+    });
 };

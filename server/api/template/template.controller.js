@@ -1,6 +1,7 @@
 const { Template } = require('../../conn/sqldb');
 const { AccountId } = require('../../config/environment');
 const unflatten = require('../../components/utils/unflatten');
+const logger = require('../../components/logger');
 
 exports.index = (req, res, next) => Template
   .findAll({ raw: true }).then(templates => res.json(templates)).catch(next);
@@ -23,6 +24,7 @@ exports.create = (req, res) => {
     })
 
     .catch((e) => {
+      logger.error('create', e);
       const errorXml = `<ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
         <Error>
           <Type>Sender</Type>
@@ -59,7 +61,8 @@ exports.update = (req, res) => {
 
       return res.end(successXML);
     })
-    .catch(() => {
+    .catch((e) => {
+      logger.error('update', e);
       const errorXml = `<ErrorResponse xmlns="http://ses.amazonaws.com/doc/2010-12-01/">
   <Error>
     <Type>Sender</Type>
