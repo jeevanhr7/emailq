@@ -21,8 +21,14 @@ Step 1 : Create .emailq file and add the following
   AWSSecretKey="ABCD"
   AWSEndPoint=http://localhost:1587
   AWSRegion=us-west-2
-  IDENTITY=youremail@yourdomain.com
   
+  # AWS SES Domain Identity
+  DOMAIN_IDENTITY=verified-domain.com
+  
+  ## AWS Email Identity
+  EMAIL_IDENTITY=youremail@yourdomain.com
+  
+  # SMTP Settings to Delivery Email
   SMTP_HOST=smtp.gmail.com
   SMTP_SECURE=false
   SMTP_IGNORETLS=true
