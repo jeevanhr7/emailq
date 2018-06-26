@@ -63,8 +63,8 @@ n lts
 
 Step 4 : Install emailq.
 ```sh
-Clone the emailq project from :
-https://github.com/manjeshpv/emailq
+cd ~
+git clone https://github.com/manjeshpv/emailq
 ```
 
 Step 5: Install node packages in emailq project
@@ -72,6 +72,7 @@ Step 5: Install node packages in emailq project
 ```sh
 cd emailq
 npm install
+npm start
 ```
 
 Step 6: Run emailq on systemd
