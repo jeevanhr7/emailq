@@ -2,6 +2,16 @@
 
 EmailQ is an open source email server compatible with Amazon SES APIs
 
+**Important Features Pending**:
+
+- Bounce Handling
+- List Unsubscribe Headers
+- Return Path
+
+**Other considerations**-
+
+- Outperforms with [Haraka Open Source Nodejs SMTP Server](https://github.com/haraka/Haraka)
+
 ##### EmailQ Server Installation
 
 Step 1 : Create .emailq file and add the following
