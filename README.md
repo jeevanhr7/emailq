@@ -30,9 +30,8 @@ Support for Mail for Good - https://github.com/manjeshpv/emailq/wiki/Mail-for-Go
 
 ##### EmailQ Server Installation
 
-Step 1 : Create .emailq file and add the following
+Step 1 : Create `nano ~/.emailq` file and add the following
 ```sh
-  
   AWSAccessKeyId="ABCD"
   AWSSecretKey="ABCD"
   AWSEndPoint=http://localhost:1587
