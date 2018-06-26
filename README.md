@@ -2,8 +2,22 @@
 
 EmailQ is an open source email server compatible with Amazon SES APIs
 
+**Available APIs 
+
+- CreateTemplate
+- SendEmail
+- SendBulkTemplatedEmail
+- SendTemplatedEmail
+- SendRawEmail
+- UpdateTemplate
+- GetSendQuota - dummy
+- SetIdentityNotificationTopic - dummy
+
 **Important Features Pending**:
 
+- Sending Statitstics
+- Dedicated IPs
+- Reputation Dashboard
 - Bounce Handling
 - List Unsubscribe Headers
 - Return Path
@@ -15,7 +29,6 @@ EmailQ is an open source email server compatible with Amazon SES APIs
 - Simplified Integration with Haraka SMTP (DKIM, SPF, DMARC)
 - Email Verification
 - Suppressions
-- Tracking Deliveries, Bounces, Rejects
 - SMTP Settings
 
 
