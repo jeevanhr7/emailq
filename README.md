@@ -11,6 +11,13 @@ EmailQ is an open source email server compatible with Amazon SES APIs
 **Other considerations**-
 
 - Outperforms with [Haraka Open Source Nodejs SMTP Server](https://github.com/haraka/Haraka)
+- First Test in Local Machine using maildev `npm install -g maildev && maildev`
+
+https://github.com/manjeshpv/emailq/wiki/Development-Settings
+
+Report issues: https://github.com/manjeshpv/emailq/issues
+
+Support for Mail for Good - https://github.com/manjeshpv/emailq/wiki/Mail-for-Good-Support
 
 ##### EmailQ Server Installation
 
