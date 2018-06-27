@@ -196,6 +196,8 @@ function getEmails(addresses) {
   return addresses.filter(email => email.address && email.address.trim() !== '').map(email => email.address);
 }
 
+const getAddress = (arr = []) => arr.map(x => (x.name === '' ? x.address : `"${x.name}" <${x.address}>`));
+
 function authenticateSourceEmail(email) {
   const domainAllowed = DOMAIN_IDENTITY.split(',').includes(email.split('@')[0]);
   const emailAllowed = EMAIL_IDENTITY.split(',').includes(email);
@@ -205,32 +207,47 @@ function authenticateSourceEmail(email) {
 exports.SendRawEmail = async (req, res, next) => {
   const rawEmailContents = Buffer.from(req.body['RawMessage.Data'], 'base64').toString();
   const formattedMailContents = await simpleParser(rawEmailContents);
-  formattedMailContents.to = formattedMailContents.to
+
+  const to = formattedMailContents.to
     ? getEmails(formattedMailContents.to.value)
     : [];
-  formattedMailContents.cc = formattedMailContents.cc
+  const cc = formattedMailContents.cc
     ? getEmails(formattedMailContents.cc.value)
     : [];
-  formattedMailContents.bcc = formattedMailContents.bcc
+  const bcc = formattedMailContents.bcc
     ? getEmails(formattedMailContents.bcc.value)
     : [];
-  let source = req.body.Source;
-  if (source) {
-    if (!authenticateSourceEmail(source)) {
-      return res.status(400).end(addressNotVerifiedErrorXML.replace('{{IDENTITY}}', source));
-    }
-  }
-  if (formattedMailContents.from) {
-    source = getEmails(formattedMailContents.from.value)[0];
-  }
+
+  const source = addressparser(req.body.Source)[0].address;
   if (!source) {
     return res.status(400).end(missingFromParameterXMLResponse);
   }
-  if (!authenticateSourceEmail(source)) {
-    return res.status(400).end(addressNotVerifiedErrorXML.replace('{{IDENTITY}}', source));
+
+  let sourceFromRawEmail;
+  if (formattedMailContents.from) {
+    sourceFromRawEmail = getEmails(formattedMailContents.from.value)[0];
   }
 
-  const { to = [], cc = [], bcc = [] } = formattedMailContents;
+  const fromAuth = authenticateSourceEmail(sourceFromRawEmail);
+  const sourceAuth = authenticateSourceEmail(source);
+
+  if (!fromAuth || !sourceAuth) {
+    const auths = [{
+      address: source,
+      status: sourceAuth,
+    }, {
+      address: sourceFromRawEmail,
+      status: fromAuth,
+    }];
+
+    return res
+      .status(400)
+      .end(addressNotVerifiedErrorXML.replace('{{IDENTITY}}', auths
+        .filter(x => !x.status)
+        .map(x => x.address)
+        .join(',')));
+  }
+
   if (!validEmails([...to, ...cc, ...bcc])) {
     log('wrongEmailxml');
     return res.status(400).end(wrongEmailxml);
@@ -240,7 +257,16 @@ exports.SendRawEmail = async (req, res, next) => {
     log('no emails');
     return res.status(400).end(blankToErrorXml);
   }
-  return nodeMailerSendRawEmail(formattedMailContents)
+
+  const envelope = {
+    from: getAddress(formattedMailContents.from.value),
+    to: getAddress(formattedMailContents.to.value),
+  };
+
+  return nodeMailerSendRawEmail({
+    envelope,
+    raw: rawEmailContents,
+  })
     .then(sentMailDetails => res.send(sendRawEmailSuccessXMLResponse(sentMailDetails.messageId)))
     .catch((err) => {
       logger.error('SendRawEmail', err, req.body);
