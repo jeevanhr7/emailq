@@ -32,6 +32,8 @@ Don't forgot to Join [slack for help](https://join.slack.com/t/emailq/shared_inv
 - Email Verification
 - Suppressions
 - SMTP Settings
+- Mailbox Simulator
+- UI
 
 
 **Other considerations**-
