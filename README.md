@@ -47,7 +47,7 @@ Support for Mail for Good - https://github.com/manjeshpv/emailq/wiki/Mail-for-Go
 
 ##### EmailQ Server Installation
 
-Step 1 : Create `nano ~/.emailq` file and add the following
+Step 1 : Switch user to root using `sudo -i`, Create `nano ~/.emailq` file and add the following
 ```sh
   AWSAccessKeyId="ABCD"
   AWSSecretKey="ABCD"
@@ -97,9 +97,11 @@ Step 6: Run emailq on systemd
 ```sh
 cd /etc/nginx/conf.d/
 sudo nano ses.example.com.conf
+```
 
 Paste the following 
 
+```sh
 server {
  listen  80;
  server_name    ses.example.com;
@@ -108,7 +110,6 @@ server {
 
 server {
   listen 443 ssl;
-  #include /etc/nginx/statsd;
   server_name ses.example.com;
   ssl on;
   ssl_certificate /etc/nginx/ssl/ssl-bundle.crt;
@@ -120,7 +121,9 @@ server {
         proxy_pass http://127.0.0.1:1587;
     }
   }
+```
 
+```sh
 # test nginx settings
 sudo nginx -t
 sudo systemctl restart nginx.
@@ -132,27 +135,30 @@ Step 7: Create systemd unit: Systemd will keep emailq up and running
 ```sh
 cd /etc/systemd/system
 sudo nano emailq.service
-
+```
 Paste the following code
 
+```sh
 [Unit]
 Description=EmailQ
 After=syslog.target
 
 [Service]
-WorkingDirectory=/home/mail.google.com
-ExecStart=/usr/local/bin/node node_modules/emailq/bin/emailq
+WorkingDirectory=/root/emailq
+ExecStart=/usr/local/bin/node server/app
 ExecReload=/usr/bin/kill -HUP $MAINPID
 Restart=always
 StandardOutput=syslog
 StandardError=syslog
 SyslogIdentifier=emailq
-User=
-Group=gloryque
+User=root
+Group=root
 
 [Install]
 WantedBy=multi-user.target
+```
 
+```sh
 # to check unit status
 sudo systemctl status emailq
 
