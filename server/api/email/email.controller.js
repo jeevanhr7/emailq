@@ -218,14 +218,17 @@ exports.SendRawEmail = async (req, res, next) => {
     ? getEmails(formattedMailContents.bcc.value)
     : [];
 
-  const source = addressparser(req.body.Source)[0].address;
-  if (!source) {
-    return res.status(400).end(missingFromParameterXMLResponse);
-  }
-
   let sourceFromRawEmail;
   if (formattedMailContents.from) {
     sourceFromRawEmail = getEmails(formattedMailContents.from.value)[0];
+  }
+
+  const source = addressparser(req.body.Source).length
+    ? addressparser(req.body.Source)[0].address
+    : sourceFromRawEmail;
+
+  if (!source) {
+    return res.status(400).end(missingFromParameterXMLResponse);
   }
 
   const fromAuth = authenticateSourceEmail(sourceFromRawEmail);
