@@ -115,6 +115,8 @@ server {
   ssl_certificate_key /etc/nginx/ssl/example.com-ssl.key;
 
     location / {
+        # SendRawEmail with attachments limited to 10MB as per AWS SES Limits
+        client_max_body_size 10M;
         proxy_pass http://127.0.0.1:1587;
     }
   }
