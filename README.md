@@ -25,7 +25,7 @@ Don't forgot to Join [slack for help](https://join.slack.com/t/emailq/shared_inv
 - Bounce Handling
 - List Unsubscribe Headers
 - Return Path
-- IP Warmup (and Automated)
+- [IP Warmup (and Automated)](https://sendgrid.com/docs/User_Guide/Settings/ip_warmup.html)
 - [SNS & SQS Notification](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/event-publishing-retrieving-sns-contents.html) - [Minio Impl](https://docs.minio.io/docs/minio-bucket-notification-guide#AMQP)
 - Render Failures
 - ConfigurationSet (Click and Open Tracking, IP Pool)
