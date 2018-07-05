@@ -26,7 +26,7 @@ Don't forgot to Join [slack for help](https://join.slack.com/t/emailq/shared_inv
 - List Unsubscribe Headers
 - Return Path
 - IP Warmup (and Automated)
-- SNS & SQS Notification
+- [SNS & SQS Notification](https://docs.aws.amazon.com/ses/latest/DeveloperGuide/event-publishing-retrieving-sns-contents.html) - [Minio Impl](https://docs.minio.io/docs/minio-bucket-notification-guide#AMQP)
 - Render Failures
 - ConfigurationSet (Click and Open Tracking, IP Pool)
 - Feedback Loop
