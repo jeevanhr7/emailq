@@ -8,7 +8,7 @@ Don't forgot to Join [slack for help](https://join.slack.com/t/emailq/shared_inv
 
 [Amazon SES Docs](https://docs.aws.amazon.com/ses/latest/APIReference/Welcome.html)
 
-**Available APIs**
+**Available API's**
 
 - CreateTemplate
 - SendEmail
