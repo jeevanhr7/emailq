@@ -2,7 +2,7 @@
 
 EmailQ is an open source email server compatible with Amazon SES APIs
 
-![SES Design](https://raw.githubusercontent.com/manjeshpv/emailq/4739554547e0f956018b6e9edcc82269c94b67f9/ses-design.jpg)
+![SES Design](https://raw.githubusercontent.com/manjeshpv/emailq/master/ses-design.jpg)
 
 Don't forgot to Join [slack for help](https://join.slack.com/t/emailq/shared_invite/enQtMzg4MDA0MDcyMDM2LTFhZTNhYzQwMzVkYWVmODRhYTdiMjI3YTc5ZWMxZDUyOWIxYmI3MDliMWQxMGZlMmQwNzk4Yjg4MmRmOGFjYTU):
 
