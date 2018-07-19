@@ -264,6 +264,8 @@ exports.SendRawEmail = async (req, res, next) => {
   const envelope = {
     from: getAddress(formattedMailContents.from.value),
     to: getAddress(formattedMailContents.to.value),
+    cc,
+    bcc,
   };
 
   return nodeMailerSendRawEmail({
