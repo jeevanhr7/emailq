@@ -10,6 +10,7 @@ const TemplateCtrl = require('./api/template/template.controller');
 const EmailCtrl = require('./api/email/email.controller');
 
 const template = require('./api/template');
+const email = require('./api/email');
 const logger = require('./components/logger');
 
 const log = debug('emailq.routes');
@@ -77,6 +78,7 @@ module.exports = (app) => {
     }
   });
   app.use('/templates', template);
+  app.use('/api/emails', email);
   app.get('/emails', (req, res) => res.json(EMAIL_IDENTITY.split(',')));
   app.get('/domains', (req, res) => res.json(DOMAIN_IDENTITY.split(',')));
   app.get('/', (req, res) => res.json({ name, version }));

@@ -4,6 +4,7 @@ const debug = require('debug');
 const hbs = require('handlebars');
 const addressparser = require('addressparser');
 const { simpleParser } = require('mailparser');
+const rp = require('request-promise');
 
 const { nodeMailer, nodeMailerSendRawEmail } = require('../../conn/nodeMailer');
 const { Template } = require('../../conn/sqldb');
@@ -21,7 +22,7 @@ const {
   sendRawEmailSuccessXMLResponse,
   missingFromParameterXMLResponse,
 } = require('./email.response')();
-const { DOMAIN_IDENTITY, EMAIL_IDENTITY } = require('../../config/environment');
+const { DOMAIN_IDENTITY, EMAIL_IDENTITY, SNS_HOOK } = require('../../config/environment');
 
 const unflatten = require('../../components/utils/unflatten');
 
@@ -42,6 +43,38 @@ const validEmails = (emails) => {
 
   // if (!valid) throw new Error(ajv.errorsText());
   return valid;
+};
+
+exports.click = (req, res, next) => {
+  res.redirect(req.query.url);
+  const body = {
+    eventType: 'Click',
+    mail: {
+      messageId: req.query.messageId,
+    },
+    click: {
+      ipAddress: req.connection.remoteAddress,
+      link: req.query.url,
+      linkTags: {
+        samplekey0: [
+          'samplevalue0',
+        ],
+        samplekey1: [
+          'samplevalue1',
+        ],
+      },
+      timestamp: (new Date()).toISOString(),
+      userAgent: req.get('User-Agent'),
+    },
+  };
+
+  return rp({
+    method: 'POST',
+    uri: SNS_HOOK,
+    body,
+    json: true,
+  })
+    .catch(next);
 };
 
 exports.SendTemplatedEmail = (req, res, next) => {

@@ -1,6 +1,9 @@
+const uuidv1 = require('uuid/v1');
 const logger = require('../../components/logger');
 const connection = require('./connection');
 const postalConnection = require('./postal-connection');
+const { CONFIGURATIONS, AWSRegion, AWSDomain } = require('../../config/environment');
+const wrapLink = require('./wrapLink');
 
 process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
 
@@ -13,6 +16,8 @@ const transporter = {
     return connection.sendMail(mail, callback);
   },
 };
+
+const generateMessageId = uuid => `<010101646a488ef9-${uuid}-000000@${AWSRegion}.${AWSDomain}>`;
 
 function nodeMailer(email, TemplateName = false) {
   const { Source: from } = email;
@@ -35,9 +40,15 @@ function nodeMailer(email, TemplateName = false) {
     mail.html = email.Message.Body.Html.Data;
   }
 
-
   if (email.Message.Body.Text && email.Message.Body.Text.Data) {
     mail.text = email.Message.Body.Text.Data;
+  }
+
+  if (email.Message.Body.Html && email.Message.Body.Html.Data) {
+    mail.messageId = generateMessageId(uuidv1());
+
+    if (CONFIGURATIONS.split(',').includes('click')) mail.html = wrapLink(email.Message.Body.Html.Data, mail.messageId);
+    else mail.html = email.Message.Body.Html.Data;
   }
 
   const cc = m.Destination.CcAddresses ? Object.values(m.Destination.CcAddresses.member) : [];
