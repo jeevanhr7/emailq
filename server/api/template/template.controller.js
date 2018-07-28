@@ -67,7 +67,7 @@ exports.update = (req, res) => {
   <Error>
     <Type>Sender</Type>
     <Code>TemplateDoesNotExist</Code>
-    <Message>Template MyTemplate does not exist.</Message>
+    <Message>`Template ${template.TemplateName} does not exist.`</Message>
   </Error>
   <RequestId>14bc972f-632a-11e8-8f45-29aadae51f12</RequestId>
 </ErrorResponse>`;
